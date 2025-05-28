@@ -35,13 +35,25 @@ body {
 
 .header h1 {
     margin: 0;
-    font-size: 34px;
+    font-size: 36px;
+    letter-spacing: 0.4px;
 }
 
 .header a {
     text-decoration: none;
     color: #FFFFFF;
 }
+
+.subtitle {
+    font-size: 18px;
+    color: #FFFFFF;
+    margin-top: 8px;
+    margin-bottom: 0;
+    margin-left: 2px;
+    font-style: normal;
+    letter-spacing: 0.4px;
+}
+
 
 /* Home page cards */
 .card-container {
