@@ -97,12 +97,12 @@ body {
     background-color: #1d8bf9;
 }
 
-.github-card {
-    background-color: #222222;
-}
-
 .farcaster-card {
     background-color: #462d8d;
+}
+
+.github-card {
+    background-color: #222222;
 }
 
 .redbubble-card {
@@ -111,6 +111,10 @@ body {
 
 .youtube-card {
     background-color: #fa0038;
+}
+
+.zora-card {
+    background-color: #3c5dc1;
 }
 
 /* Footer */
