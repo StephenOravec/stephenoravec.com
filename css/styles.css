@@ -113,8 +113,16 @@ body {
     background-color: #196bbd;
 }
 
+.pinterest-card {
+    background-color: #e10029;
+}
+
 .redbubble-card {
     background-color: #e41321;
+}
+
+.reddit-card {
+    background-color: #fa291d;
 }
 
 .tumblr-card {
@@ -127,6 +135,10 @@ body {
 
 .wordpress-card {
     background-color: #3b5fe3;
+}
+
+.x-card {
+    background-color: #000000;
 }
 
 .youtube-card {
