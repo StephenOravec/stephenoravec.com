@@ -105,12 +105,24 @@ body {
     background-color: #222222;
 }
 
+.goodreads-card {
+    background-color: #1e1915;
+}
+
+.linkedin-card {
+    background-color: #196bbd;
+}
+
 .redbubble-card {
     background-color: #e41321;
 }
 
 .tumblr-card {
     background-color: #021a33;
+}
+
+.twitch-card {
+    background-color: #924df8;
 }
 
 .wordpress-card {
