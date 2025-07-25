@@ -1,12 +1,7 @@
 {
-  "routes": [
-    {
-      "route": "/:year/:month/:day/:slug",
-      "statusCode": 301,
-      "redirect": "https://stephenoravec.wordpress.com/:year/:month/:day/:slug"
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/404.html"
     }
-  ],
-  "navigationFallback": {
-    "rewrite": "/404.html"
   }
 }
