@@ -1,6 +1,6 @@
 {
   "navigationFallback": {
-    "rewrite": "/index.html",
+    "rewrite": null,
     "exclude": ["/404.html"]
   },
   "responseOverrides": {
