@@ -33,7 +33,7 @@ body {
 
 /* Title of website as it appears in header */
 
-.header h1 {
+.site-title {
     margin: 0;
     font-size: 36px;
     letter-spacing: 0.4px;
@@ -54,6 +54,19 @@ body {
     letter-spacing: 0.4px;
 }
 
+/* Page styles */
+
+.page-title {
+    margin: 0;
+    font-size: 72px;
+    letter-spacing: 1px;
+}
+
+.not-found {
+    font-size: clamp(2rem, 6vw, 4rem);
+    padding-top: 2rem;
+    padding-left: 2rem;
+}
 
 /* Home page cards */
 .card-container {
