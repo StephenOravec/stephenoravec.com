@@ -1,8 +1,13 @@
 {
   "routes": [
     {
-      "route": "https://stephenoravec/:year/:month/:day/:slug/",
-      "redirect": "https://stephenoravec.wordpress.com/:year/:month/:day/:slug/",
+      "route": "/:year/:month/:day/:slug",
+      "redirect": "https://stephenoravec.wordpress.com/:year/:month/:day/:slug",
+      "statusCode": 301
+    },
+    {
+      "route": "/:year/:month/:day/:slug/",
+      "redirect": "https://stephenoravec.wordpress.com/:year/:month/:day/:slug",
       "statusCode": 301
     }
   ],
