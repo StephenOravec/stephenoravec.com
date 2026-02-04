@@ -166,12 +166,17 @@ body {
 }
 
 /* ================================
-   PAGE TITLES
+   PAGE-SPECIFIC OVERRIDES
    ================================ */
+.page-profiles {
+    background-color: #16161d;
+}
+
 .page-title {
-    font-size: 48px;
+    font-size: 36px;
     letter-spacing: 1px;
     padding: 2rem 30px 1rem 30px;
+    text-align: center;
 }
 
 /* ================================
