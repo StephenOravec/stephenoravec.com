@@ -1,29 +1,60 @@
-@font-face {
-    font-family: "Lustria";
-    src: url("/fonts/Lustria-Regular.ttf") format("truetype");
+/* ================================
+   BASE
+   ================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    background-color: #2f2f3c;
+    background-color: #0a0a0f;
     color: #ffffff;
-    font-family: "Lustria", serif;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+    font-family: "SF Mono", "Fira Code", "Consolas", "Monaco", "Courier New", monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-/* Header */
+/* ================================
+   LAYOUT
+   ================================ */
+.content-layer {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
+.main-area {
+    flex: 1;
+}
+
+/* ================================
+   HEADER & NAVIGATION
+   ================================ */
 .header {
-    background: linear-gradient(135deg,#16161d, #191922, #1e1e26, #20202a, #23232c, #2f2f3c, #373746, #2f2f3c, #23232c, #20202a, #1e1e26, #191922, #16161d);
+    background: linear-gradient(135deg,
+        rgba(22, 22, 29, 0.9),
+        rgba(25, 25, 34, 0.9),
+        rgba(30, 30, 38, 0.9),
+        rgba(32, 32, 42, 0.9),
+        rgba(35, 35, 44, 0.9),
+        rgba(47, 47, 60, 0.9),
+        rgba(55, 55, 70, 0.9),
+        rgba(47, 47, 60, 0.9),
+        rgba(35, 35, 44, 0.9),
+        rgba(32, 32, 42, 0.9),
+        rgba(30, 30, 38, 0.9),
+        rgba(25, 25, 34, 0.9),
+        rgba(22, 22, 29, 0.9));
     background-size: 200% 200%;
-    background-blend-mode: overlay;
     padding: 30px;
-    margin-bottom: 0px;
-    border-radius: 0px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     animation: metallicShine 44s infinite alternate ease-in-out;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 @keyframes metallicShine {
@@ -31,54 +62,129 @@ body {
     100% { background-position: 100% 100%; }
 }
 
-/* Title of website as it appears in header */
+.header-text {
+    display: flex;
+    flex-direction: column;
+}
 
 .site-title {
-    margin: 0;
-    font-size: 36px;
+    font-size: 32px;
     letter-spacing: 0.4px;
 }
 
-.header a {
+.site-title a {
     text-decoration: none;
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 .subtitle {
-    font-size: 18px;
-    color: #FFFFFF;
+    font-size: 16px;
+    color: #ffffff;
     margin-top: 8px;
-    margin-bottom: 0;
-    margin-left: 2px;
-    font-style: normal;
     letter-spacing: 0.4px;
 }
 
-/* Page styles */
+/* Hamburger button */
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
 
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.hamburger.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Navigation menu */
+.nav-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background-color: rgba(13, 13, 13, 0.95);
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    padding-top: 5rem;
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0.3s ease;
+}
+
+.nav-menu.active {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.nav-menu ul {
+    list-style: none;
+}
+
+.nav-menu a {
+    display: block;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    color: #fff;
+    transition: background-color 0.2s;
+}
+
+.nav-menu a:hover {
+    background-color: #333;
+}
+
+/* ================================
+   RAIN CANVAS (index only)
+   ================================ */
+#rain-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ================================
+   PAGE TITLES
+   ================================ */
 .page-title {
-    margin: 0;
-    font-size: 72px;
+    font-size: 48px;
     letter-spacing: 1px;
+    padding: 2rem 30px 1rem 30px;
 }
 
-.not-found {
-    font-size: clamp(2rem, 6vw, 4rem);
-    padding-top: 2rem;
-    padding-left: 2rem;
-}
-
-/* Home page cards */
+/* ================================
+   CARDS (profiles/links pages)
+   ================================ */
 .card-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
     gap: 20px;
     justify-content: center;
-    padding: 20px;
-    margin-top: 18px;
+    padding: 20px 30px;
 }
 
-/* Shared card styles */
 .card {
     display: block;
     color: white;
@@ -91,6 +197,11 @@ body {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
+.card h2 {
+    font-size: 22px;
+    font-weight: normal;
+}
+
 .card:hover {
     transform: scale(1.03);
     box-shadow: 0 4px 9px rgba(0, 0, 0, 0.2);
@@ -101,9 +212,9 @@ body {
     outline-offset: 4px;
 }
 
-/* Unique card styles */
+/* Individual card colors */
 .amazon-card {
-    background-color: #fb5322
+    background-color: #fb5322;
 }
 
 .bluesky-card {
@@ -164,15 +275,4 @@ body {
 
 .zora-card {
     background-color: #3c5dc1;
-}
-
-/* Footer */
-
-.footer {
-    margin-top: auto;
-    display: flex;
-    justify-content: flex-end;
-    padding-right: 20px;
-    padding-bottom: 30px;
-    background: #2f2f3c;
 }
