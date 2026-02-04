@@ -199,7 +199,7 @@ body {
     font-size: 22px;
     font-weight: normal;
     text-decoration: none;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition: padding 0.2s ease-in-out, margin 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .card h2 {
@@ -208,7 +208,8 @@ body {
 }
 
 .card:hover {
-    transform: scale(1.03);
+    padding: 28px;
+    margin: -8px;
     box-shadow: 0 4px 9px rgba(0, 0, 0, 0.2);
 }
 
