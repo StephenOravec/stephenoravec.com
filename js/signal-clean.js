@@ -1,6 +1,6 @@
 // Cablepunk Clean Signal
 (function() {
-    const canvas = document.getElementById('rain-canvas');
+    const canvas = document.getElementById('signal-canvas');
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');

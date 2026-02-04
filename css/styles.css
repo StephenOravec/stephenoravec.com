@@ -162,9 +162,9 @@ body {
 }
 
 /* ================================
-   RAIN CANVAS (index only)
+   SIGNAL CANVAS (index only)
    ================================ */
-#rain-canvas {
+#signal-canvas {
     position: fixed;
     top: 0;
     left: 0;
