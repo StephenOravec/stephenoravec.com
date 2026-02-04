@@ -1,9 +1,9 @@
 (function() {
     // Menu content
     const menuItems = [
-        { label: 'signal', href: '/' },
-        { label: 'books', href: '/books' },
-        { label: 'profiles', href: '/profiles' }
+        { label: 'Signal', href: '/' },
+        { label: 'Books', href: '/books' },
+        { label: 'Profiles', href: '/profiles' }
     ];
 
     // Find the header
