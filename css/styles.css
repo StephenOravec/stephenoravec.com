@@ -309,6 +309,10 @@ body {
         margin-top: 8px;
     }
 
+    .nav-menu {
+         width: 280px;
+    }
+
     .page-title {
         font-size: 36px;
         padding: 2rem 30px 1rem 30px;
