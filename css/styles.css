@@ -440,6 +440,7 @@ body {
     .book-content {
         flex-direction: row;
         gap: 2rem;
+        align-items: flex-start;
     }
 
     .book-image {
@@ -449,6 +450,7 @@ body {
 
     .book-description {
         flex: 1;
+        padding-top: 2rem;
     }
 
     .book-links {
