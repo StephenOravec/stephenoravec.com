@@ -235,6 +235,47 @@ body {
     margin-bottom: 0;
 }
 
+.book-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.buy-button {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: normal;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, outline 0.2s ease;
+    text-align: center;
+}
+
+.buy-button:hover,
+.buy-button:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.kindle-button {
+    background-color: #232f3e;
+    color: #ffffff;
+}
+
+.paperback-button {
+    background-color: #ff9900;
+    color: #000000;
+}
+
+.goodreads-button {
+    background-color: #372213;
+    color: #ffffff;
+}
+
 /* ================================
    CARDS (profiles/links pages)
    ================================ */
@@ -410,5 +451,14 @@ body {
 
     .book-description {
         flex: 1;
+    }
+
+    .book-links {
+        margin-top: 2rem;
+    }
+    
+    .buy-button {
+        font-size: 18px;
+        padding: 14px 28px;
     }
 }
