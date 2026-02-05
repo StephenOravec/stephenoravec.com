@@ -162,7 +162,7 @@ body {
 }
 
 /* ================================
-   SIGNAL CANVAS (index only)
+   SIGNAL CANVAS (digital rain, index only)
    ================================ */
 #signal-canvas {
     position: fixed;
@@ -213,7 +213,13 @@ body {
     content: '';
     flex: 1;
     height: 80px;
-    background-color: inherit;
+    background: 
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0) 40%
+        ),
+        inherit;
 }
 
 .card h2 {
