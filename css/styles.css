@@ -189,6 +189,53 @@ body {
 }
 
 /* ================================
+   BOOKS PAGE
+   ================================ */
+.page-books {
+    background-color: #16161d;
+}
+
+.books-container {
+    padding: 16px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.book {
+    margin-bottom: 3rem;
+}
+
+.book-title {
+    font-size: 24px;
+    font-weight: normal;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.book-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.book-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.book-description p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.book-description p:last-child {
+    margin-bottom: 0;
+}
+
+/* ================================
    CARDS (profiles/links pages)
    ================================ */
 .card-container {
@@ -340,5 +387,28 @@ body {
         height: 100px;
         font-size: 22px;
         padding: 0 20px;
+    }
+
+    .books-container {
+        padding: 20px 30px;
+    }
+
+    .book-title {
+        font-size: 32px;
+        margin-bottom: 1.5rem;
+    }
+
+    .book-content {
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .book-image {
+        flex-shrink: 0;
+        max-width: 250px;
+    }
+
+    .book-description {
+        flex: 1;
     }
 }
