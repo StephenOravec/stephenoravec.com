@@ -325,6 +325,10 @@ body {
 }
 
 /* Individual card colors */
+.f500px-card {
+    background-color: #212222;
+}
+
 .amazon-card {
     background-color: #fb5322;
 }
@@ -349,6 +353,10 @@ body {
     background-color: #1e1915;
 }
 
+.gravatar-card {
+    background-color: #2355bf;
+}
+
 .instagram-card {
     background-color: #FF0069;
 }
@@ -359,6 +367,10 @@ body {
 
 .pinterest-card {
     background-color: #e10029;
+}
+
+.psnprofiles-card {
+    background-color: #36648e;
 }
 
 .redbubble-card {
@@ -395,10 +407,6 @@ body {
 
 .youtube-card {
     background-color: #fa0038;
-}
-
-.zora-card {
-    background-color: #3c5dc1;
 }
 
 /* ================================
