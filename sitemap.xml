@@ -6,6 +6,11 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://stephenoravec.com/cablepunk</loc>
+    <lastmod>2026-03-09</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://stephenoravec.com/books</loc>
     <lastmod>2026-02-05</lastmod>
     <priority>0.8</priority>

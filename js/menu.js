@@ -2,6 +2,7 @@
     // Menu content
     const menuItems = [
         { label: 'Signal', href: '/' },
+        { label: 'Cablepunk, 2009–', href: '/cablepunk' },
         { label: 'Books', href: '/books' },
         { label: 'Profiles', href: '/profiles' }
     ];
