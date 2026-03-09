@@ -192,6 +192,55 @@ body {
 }
 
 /* ================================
+   CABLEPUNK PAGE
+   ================================ */
+.cablepunk-byline {
+    text-align: center;
+    font-size: 16px;
+    color: #ccc;
+    letter-spacing: 0.3px;
+    margin-bottom: 1.5rem;
+}
+
+.cablepunk-container {
+    padding: 16px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cablepunk-container p {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.cablepunk-subheading {
+    font-size: 24px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.cablepunk-guide {
+    list-style-position: outside;
+    padding-left: 2rem;
+    margin-bottom: 2rem;
+}
+
+.cablepunk-guide li {
+    line-height: 1.8;
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+}
+
+.cablepunk-updated {
+    font-size: 14px;
+    color: #888;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* ================================
    BOOKS PAGE
    ================================ */
 .page-books {
@@ -449,6 +498,14 @@ body {
         height: 100px;
         font-size: 22px;
         padding: 0 20px;
+    }
+
+    .cablepunk-container {
+        padding: 20px 30px;
+    }
+
+    .cablepunk-subheading {
+        font-size: 32px;
     }
 
     .books-container {
