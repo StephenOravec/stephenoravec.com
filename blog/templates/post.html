@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{description}}">
+    <meta name="author" content="Stephen Oravec">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "{{title}}",
+        "author": { "@type": "Person", "name": "Stephen Oravec" },
+        "datePublished": "{{date}}",
+        "description": "{{description}}",
+        "image": "{{og_image_url}}",
+        "url": "https://stephenoravec.com/blog/{{date_path}}/{{slug}}"
+    }
+    </script>
+    <title>{{title}} | Stephen Oravec</title>
+    <meta property="og:title" content="{{title}} | Stephen Oravec">
+    <meta property="og:description" content="{{description}}">
+    <meta property="og:image" content="{{og_image_url}}">
+    <meta property="og:url" content="https://stephenoravec.com/blog/{{date_path}}/{{slug}}">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="StephenOravec.com">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="page-post">
+    <div class="content-layer">
+        <header class="header">
+            <div class="header-text">
+                <h2 class="site-title"><a href="/">Stephen Oravec</a></h2>
+                <p class="subtitle">Writer, etc.</p>
+            </div>
+        </header>
+
+        <main class="main-area">
+            <article class="post-container">
+                <img class="post-image"
+                     src="{{image_url}}"
+                     alt="{{image_alt}}"
+                     loading="lazy">
+                <h1 class="post-title">{{title}}</h1>
+                <time class="post-date" datetime="{{date}}">{{display_date}}</time>
+                <p class="post-description">{{description}}</p>
+                {{body_content}}
+            </article>
+        </main>
+    </div>
+
+    <script src="/js/menu.js"></script>
+</body>
+</html>
