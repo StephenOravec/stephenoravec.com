@@ -24,7 +24,7 @@ def new_post(title):
         sys.exit(1)
 
     template = f"""---
-title: {title}
+title: "{title}"
 slug: {slug}
 date:
 time:
