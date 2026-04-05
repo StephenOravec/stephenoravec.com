@@ -23,25 +23,27 @@ def new_post(title):
         print(f"Draft already exists: {draft_path}")
         sys.exit(1)
 
-    post = frontmatter.Post("")
-    post["title"] = title
-    post["slug"] = slug
-    post["date"] = ""
-    post["time"] = ""
-    post["image"] = ""
-    post["image-alt"] = ""
-    post["description"] = ""
-    post["tags"] = []
-    post["category"] = ""
-    post["subcategory"] = ""
-    post["source"] = "original"
-    post["type"] = "short"
-    post["origin"] = ""
-    post["origin-date"] = ""
-    post["import-date"] = ""
+    template = f"""---
+title: {title}
+slug: {slug}
+date:
+time:
+image:
+image-alt:
+description:
+tags: []
+category:
+subcategory:
+source: original
+type: short
+origin:
+origin-date:
+import-date:
+---
+"""
 
     with open(draft_path, "w") as f:
-        f.write(frontmatter.dumps(post))
+        f.write(template)
 
     staging_path = os.path.join(staging_dir, slug)
     os.makedirs(staging_path, exist_ok=True)
