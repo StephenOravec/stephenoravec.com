@@ -138,6 +138,11 @@ def main():
             print('Usage: python blog.py new "Post Title"')
             sys.exit(1)
         new_post(sys.argv[2])
+    elif command == "build-post":
+        if len(sys.argv) < 3:
+            print('Usage: python blog.py build-post <slug>')
+            sys.exit(1)
+        build_post(sys.argv[2])
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
