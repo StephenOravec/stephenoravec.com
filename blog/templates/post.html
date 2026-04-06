@@ -38,12 +38,12 @@
 
         <main class="main-area">
             <article class="post-container">
+                <h1 class="post-title">{{title}}</h1>
+                <time class="post-date" datetime="{{date}}">{{display_date}}</time>
                 <img class="post-image"
                      src="{{image_url}}"
                      alt="{{image_alt}}"
                      loading="lazy">
-                <h1 class="post-title">{{title}}</h1>
-                <time class="post-date" datetime="{{date}}">{{display_date}}</time>
                 <p class="post-description">{{description}}</p>
                 {{body_content}}
             </article>
