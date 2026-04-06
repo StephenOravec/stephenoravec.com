@@ -10,6 +10,80 @@ def slugify(title):
     slug = slug.strip('-')
     return slug
 
+def build_post(slug):
+    blog_dir = os.path.dirname(os.path.abspath(__file__))
+    drafts_dir = os.path.join(blog_dir, "drafts")
+    templates_dir = os.path.join(blog_dir, "templates")
+
+    draft_path = os.path.join(drafts_dir, f"{slug}.md")
+
+    if not os.path.exists(draft_path):
+        print(f"Draft not found: {draft_path}")
+        sys.exit(1)
+
+    with open(draft_path, "r") as f:
+        post = frontmatter.load(f)
+
+    title = post.get("title", "")
+    description = post.get("description", "")
+    slug = post.get("slug", slug)
+    date = post.get("date", "")
+    image_name = post.get("image", "")
+    image_alt = post.get("image-alt", "")
+
+    # Build date path like 2026/04/06
+    date_path = ""
+    display_date = ""
+    if date:
+        from datetime import datetime
+        if isinstance(date, str):
+            date_obj = datetime.strptime(date, "%Y-%m-%d")
+        else:
+            date_obj = datetime.combine(date, datetime.min.time())
+        date_path = date_obj.strftime("%Y/%m/%d")
+        display_date = date_obj.strftime("%B %-d, %Y")
+        date = date_obj.strftime("%Y-%m-%d")
+
+    # Image URLs
+    image_url = ""
+    og_image_url = ""
+    if image_name:
+        base = f"https://media.stephenoravec.com/blog/{date_path}"
+        image_url = f"{base}/{image_name}-1000.webp"
+        og_image_url = f"{base}/{image_name}-og.webp"
+
+    # Body content (empty for short posts)
+    body_content = ""
+    if post.content.strip():
+        body_content = post.content
+
+    # Read template
+    template_path = os.path.join(templates_dir, "post.html")
+    with open(template_path, "r") as f:
+        template = f.read()
+
+    # Replace placeholders
+    html = template.replace("{{title}}", title)
+    html = html.replace("{{description}}", description)
+    html = html.replace("{{slug}}", slug)
+    html = html.replace("{{date}}", date)
+    html = html.replace("{{date_path}}", date_path)
+    html = html.replace("{{display_date}}", display_date)
+    html = html.replace("{{image_url}}", image_url)
+    html = html.replace("{{image_alt}}", image_alt)
+    html = html.replace("{{og_image_url}}", og_image_url)
+    html = html.replace("{{body_content}}", body_content)
+
+    # Write output
+    output_dir = os.path.join(blog_dir, "output", "blog", date_path, slug)
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "index.html")
+
+    with open(output_path, "w") as f:
+        f.write(html)
+
+    print(f"Built post: {output_path}")
+
 def new_post(title):
     slug = slugify(title)
     
