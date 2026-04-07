@@ -142,7 +142,7 @@ def main():
         if len(sys.argv) < 3:
             print('Usage: python blog.py preview <slug>')
             sys.exit(1)
-        build_post(sys.argv[2])
+        preview_post(sys.argv[2])
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
