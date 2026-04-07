@@ -48,7 +48,7 @@ def preview_post(slug):
     image_url = ""
     og_image_url = ""
     if image_name:
-        base = f"https://media.stephenoravec.com/blog/{date_path}"
+        base = f"https://storage.googleapis.com/stephenoravec-media/blog/{date_path}"
         image_url = f"{base}/{image_name}-1000.webp"
         og_image_url = f"{base}/{image_name}-og.webp"
 
