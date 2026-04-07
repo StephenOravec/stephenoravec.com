@@ -10,7 +10,7 @@ def slugify(title):
     slug = slug.strip('-')
     return slug
 
-def build_post(slug):
+def preview_post(slug):
     blog_dir = os.path.dirname(os.path.abspath(__file__))
     drafts_dir = os.path.join(blog_dir, "drafts")
     templates_dir = os.path.join(blog_dir, "templates")
@@ -138,9 +138,9 @@ def main():
             print('Usage: python blog.py new "Post Title"')
             sys.exit(1)
         new_post(sys.argv[2])
-    elif command == "build-post":
+    elif command == "preview":
         if len(sys.argv) < 3:
-            print('Usage: python blog.py build-post <slug>')
+            print('Usage: python blog.py preview <slug>')
             sys.exit(1)
         build_post(sys.argv[2])
     else:
