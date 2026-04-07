@@ -24,12 +24,12 @@ def build_post(slug):
     with open(draft_path, "r") as f:
         post = frontmatter.load(f)
 
-    title = post.get("title", "")
-    description = post.get("description", "")
-    slug = post.get("slug", slug)
-    date = post.get("date", "")
-    image_name = post.get("image", "")
-    image_alt = post.get("image-alt", "")
+    title = post.get("title", "") or ""
+    description = post.get("description", "") or ""
+    slug = post.get("slug", slug) or slug
+    date = post.get("date", "") or ""
+    image_name = post.get("image", "") or ""
+    image_alt = post.get("image-alt", "") or ""
 
     # Build date path like 2026/04/06
     date_path = ""
