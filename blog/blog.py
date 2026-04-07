@@ -128,7 +128,7 @@ import-date:
 def main():
     if len(sys.argv) < 2:
         print("Usage: python blog.py <command> [arguments]")
-        print("Commands: new")
+        print("Commands: new, preview")
         sys.exit(1)
 
     command = sys.argv[1]
