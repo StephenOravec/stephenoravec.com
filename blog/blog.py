@@ -2,6 +2,8 @@ import sys
 import os
 import re
 import frontmatter
+from PIL import Image
+from google.cloud import storage as gcs_storage
 
 def slugify(title):
     slug = title.lower()
