@@ -217,7 +217,7 @@ import-date:
 def main():
     if len(sys.argv) < 2:
         print("Usage: python blog.py <command> [arguments]")
-        print("Commands: new, preview")
+        print("Commands: new, preview, process-images")
         sys.exit(1)
 
     command = sys.argv[1]
@@ -232,6 +232,12 @@ def main():
             print('Usage: python blog.py preview <slug>')
             sys.exit(1)
         preview_post(sys.argv[2])
+    elif command == "process-images":
+        if len(sys.argv) < 4:
+            print('Usage: python blog.py process-images <slug> <date-path>')
+            print('Example: python blog.py process-images spring-break-2026 2026/04/08')
+            sys.exit(1)
+        process_images(sys.argv[2], sys.argv[3])
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
