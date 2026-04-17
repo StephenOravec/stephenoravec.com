@@ -1,4 +1,34 @@
 {
+  "routes": [
+    {
+      "route": "/blog/drafts/*",
+      "statusCode": 404
+    },
+    {
+      "route": "/blog/staging/*",
+      "statusCode": 404
+    },
+    {
+      "route": "/blog/templates/*",
+      "statusCode": 404
+    },
+    {
+      "route": "/blog/output/*",
+      "statusCode": 404
+    },
+    {
+      "route": "/blog/venv/*",
+      "statusCode": 404
+    },
+    {
+      "route": "/blog/blog.py",
+      "statusCode": 404
+    },
+    {
+      "route": "/blog/requirements.txt",
+      "statusCode": 404
+    }
+  ],
   "responseOverrides": {
     "404": {
       "redirect": "/",
