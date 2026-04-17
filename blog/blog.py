@@ -136,9 +136,17 @@ def preview_post(slug):
     # Image URLs
     image_url = ""
     og_image_url = ""
+    image_url = ""
+    image_url_400 = ""
+    image_url_1000 = ""
+    image_url_2000 = ""
+    og_image_url = ""
     if image_name:
         base = f"https://storage.googleapis.com/stephenoravec-media/blog/{date_path}"
         image_url = f"{base}/{image_name}-1000.webp"
+        image_url_400 = f"{base}/{image_name}-400.webp"
+        image_url_1000 = f"{base}/{image_name}-1000.webp"
+        image_url_2000 = f"{base}/{image_name}-2000.webp"
         og_image_url = f"{base}/{image_name}-og.webp"
 
     # Body content (empty for short posts)
@@ -159,6 +167,9 @@ def preview_post(slug):
     html = html.replace("{{date_path}}", date_path)
     html = html.replace("{{display_date}}", display_date)
     html = html.replace("{{image_url}}", image_url)
+    html = html.replace("{{image_url_400}}", image_url_400)
+    html = html.replace("{{image_url_1000}}", image_url_1000)
+    html = html.replace("{{image_url_2000}}", image_url_2000)
     html = html.replace("{{image_alt}}", image_alt)
     html = html.replace("{{og_image_url}}", og_image_url)
     html = html.replace("{{body_content}}", body_content)
