@@ -41,9 +41,11 @@
                 <h1 class="post-title">{{title}}</h1>
                 <time class="post-date" datetime="{{date}}">{{display_date}}</time>
                 <img class="post-image"
-                     src="{{image_url}}"
-                     alt="{{image_alt}}"
-                     loading="lazy">
+                    src="{{image_url}}"
+                    srcset="{{image_url_400}} 400w, {{image_url_1000}} 1000w, {{image_url_2000}} 2000w"
+                    sizes="(max-width: 768px) 100vw, 1000px"
+                    alt="{{image_alt}}"
+                    loading="lazy">
                 <p class="post-description">{{description}}</p>
                 {{body_content}}
             </article>
