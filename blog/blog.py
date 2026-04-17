@@ -184,6 +184,63 @@ def preview_post(slug):
 
     print(f"Built post: {output_path}")
 
+def publish_post(slug):
+    from datetime import date as date_module
+    
+    blog_dir = os.path.dirname(os.path.abspath(__file__))
+    drafts_dir = os.path.join(blog_dir, "drafts")
+    published_dir = os.path.join(blog_dir, "published")
+    repo_root = os.path.dirname(blog_dir)
+
+    draft_path = os.path.join(drafts_dir, f"{slug}.md")
+
+    if not os.path.exists(draft_path):
+        print(f"Draft not found: {draft_path}")
+        sys.exit(1)
+
+    # Load the draft
+    with open(draft_path, "r") as f:
+        post = frontmatter.load(f)
+
+    # Stamp today's date if not already set
+    post_date = post.get("date")
+    if not post_date:
+        today = date_module.today()
+        post["date"] = today.strftime("%Y-%m-%d")
+        post_date = post["date"]
+
+    # Parse the date to build the path
+    if isinstance(post_date, str):
+        from datetime import datetime
+        date_obj = datetime.strptime(post_date, "%Y-%m-%d")
+    else:
+        from datetime import datetime
+        date_obj = datetime.combine(post_date, datetime.min.time())
+
+    date_path = date_obj.strftime("%Y/%m/%d")
+
+    # Write the updated frontmatter back to the draft
+    with open(draft_path, "w") as f:
+        f.write(frontmatter.dumps(post))
+
+    # Process images
+    process_images(slug, date_path)
+
+    # Build the HTML and write it to the live location
+    build_published_html(slug, date_path, repo_root)
+
+    # Move draft to published folder
+    year = date_obj.strftime("%Y")
+    month = date_obj.strftime("%m")
+    published_path = os.path.join(published_dir, year, month, f"{slug}.md")
+    os.makedirs(os.path.dirname(published_path), exist_ok=True)
+    
+    import shutil
+    shutil.move(draft_path, published_path)
+    print(f"Moved draft to: {published_path}")
+
+    print(f"Published: https://stephenoravec.com/blog/{date_path}/{slug}/")
+
 def new_post(title):
     slug = slugify(title)
     
