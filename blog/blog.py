@@ -135,8 +135,6 @@ def preview_post(slug):
 
     # Image URLs
     image_url = ""
-    og_image_url = ""
-    image_url = ""
     image_url_400 = ""
     image_url_1000 = ""
     image_url_2000 = ""
