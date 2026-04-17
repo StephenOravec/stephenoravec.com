@@ -175,7 +175,7 @@ def preview_post(slug):
     html = html.replace("{{body_content}}", body_content)
 
     # Write output
-    output_dir = os.path.join(blog_dir, "output", "blog", date_path, slug)
+    output_dir = os.path.join(blog_dir, "preview", date_path, slug)
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "index.html")
 
