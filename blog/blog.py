@@ -184,6 +184,78 @@ def preview_post(slug):
 
     print(f"Built post: {output_path}")
 
+def build_published_html(slug, date_path, repo_root):
+    blog_dir = os.path.dirname(os.path.abspath(__file__))
+    drafts_dir = os.path.join(blog_dir, "drafts")
+    templates_dir = os.path.join(blog_dir, "templates")
+
+    draft_path = os.path.join(drafts_dir, f"{slug}.md")
+
+    with open(draft_path, "r") as f:
+        post = frontmatter.load(f)
+
+    title = post.get("title", "") or ""
+    description = post.get("description", "") or ""
+    slug = post.get("slug", slug) or slug
+    date = post.get("date", "") or ""
+    image_name = post.get("image", "") or ""
+    image_alt = post.get("image-alt", "") or ""
+
+    display_date = ""
+    if date:
+        from datetime import datetime
+        if isinstance(date, str):
+            date_obj = datetime.strptime(date, "%Y-%m-%d")
+        else:
+            date_obj = datetime.combine(date, datetime.min.time())
+        display_date = date_obj.strftime("%B %-d, %Y")
+        date = date_obj.strftime("%Y-%m-%d")
+
+    image_url = ""
+    image_url_400 = ""
+    image_url_1000 = ""
+    image_url_2000 = ""
+    og_image_url = ""
+    if image_name:
+        base = f"https://storage.googleapis.com/stephenoravec-media/blog/{date_path}"
+        image_url = f"{base}/{image_name}-1000.webp"
+        image_url_400 = f"{base}/{image_name}-400.webp"
+        image_url_1000 = f"{base}/{image_name}-1000.webp"
+        image_url_2000 = f"{base}/{image_name}-2000.webp"
+        og_image_url = f"{base}/{image_name}-og.webp"
+
+    body_content = ""
+    if post.content.strip():
+        body_content = post.content
+
+    template_path = os.path.join(templates_dir, "post.html")
+    with open(template_path, "r") as f:
+        template = f.read()
+
+    html = template.replace("{{title}}", title)
+    html = html.replace("{{description}}", description)
+    html = html.replace("{{slug}}", slug)
+    html = html.replace("{{date}}", date)
+    html = html.replace("{{date_path}}", date_path)
+    html = html.replace("{{display_date}}", display_date)
+    html = html.replace("{{image_url}}", image_url)
+    html = html.replace("{{image_url_400}}", image_url_400)
+    html = html.replace("{{image_url_1000}}", image_url_1000)
+    html = html.replace("{{image_url_2000}}", image_url_2000)
+    html = html.replace("{{image_alt}}", image_alt)
+    html = html.replace("{{og_image_url}}", og_image_url)
+    html = html.replace("{{body_content}}", body_content)
+
+    # Write to the live location in the repo root
+    output_dir = os.path.join(repo_root, "blog", date_path, slug)
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "index.html")
+
+    with open(output_path, "w") as f:
+        f.write(html)
+
+    print(f"Built: {output_path}")
+
 def publish_post(slug):
     from datetime import date as date_module
     
