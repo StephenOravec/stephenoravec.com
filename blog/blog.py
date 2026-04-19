@@ -32,6 +32,43 @@ def strip_markdown(text):
     text = re.sub(r'\*([^*]+)\*', r'\1', text)
     return text
 
+def write_post_file(path, post):
+    """Write a frontmatter Post to file with our preferred field order."""
+    field_order = [
+        "title", "slug", "date", "time",
+        "image", "image-alt",
+        "description",
+        "tags", "category", "subcategory",
+        "source", "type",
+        "origin", "origin-date", "import-date",
+    ]
+
+    lines = ["---"]
+    for field in field_order:
+        value = post.metadata.get(field)
+        if value is None or value == "":
+            lines.append(f"{field}:")
+        elif isinstance(value, list):
+            if len(value) == 0:
+                lines.append(f"{field}: []")
+            else:
+                items = ", ".join(str(v) for v in value)
+                lines.append(f"{field}: [{items}]")
+        elif isinstance(value, str) and (":" in value or "*" in value or "'" in value):
+            # Escape single quotes by doubling them, wrap in single quotes
+            escaped = value.replace("'", "''")
+            lines.append(f"{field}: '{escaped}'")
+        else:
+            lines.append(f"{field}: {value}")
+
+    lines.append("---")
+    if post.content:
+        lines.append("")
+        lines.append(post.content)
+
+    with open(path, "w") as f:
+        f.write("\n".join(lines))
+
 def process_images(slug, date_path):
     blog_dir = os.path.dirname(os.path.abspath(__file__))
     staging_dir = os.path.join(blog_dir, "staging", slug)
@@ -367,8 +404,7 @@ def publish_post(slug):
     date_path = date_obj.strftime("%Y/%m/%d")
 
     # Write the updated frontmatter back to the draft
-    with open(draft_path, "w") as f:
-        f.write(frontmatter.dumps(post))
+    write_post_file(draft_path, post)
 
     # Process images
     process_images(slug, date_path)
