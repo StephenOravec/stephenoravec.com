@@ -12,6 +12,26 @@ def slugify(title):
     slug = slug.strip('-')
     return slug
 
+def md_to_html(text):
+    """Convert basic Markdown formatting to HTML for rich-text contexts."""
+    if not text:
+        return ""
+    # Bold first: **text** becomes <strong>text</strong>
+    text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
+    # Then italics: *text* becomes <em>text</em>
+    text = re.sub(r'\*([^*]+)\*', r'<em>\1</em>', text)
+    return text
+
+def strip_markdown(text):
+    """Strip Markdown formatting for plain-text contexts like meta tags."""
+    if not text:
+        return ""
+    # Remove bold markers
+    text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
+    # Remove italic markers
+    text = re.sub(r'\*([^*]+)\*', r'\1', text)
+    return text
+
 def process_images(slug, date_path):
     blog_dir = os.path.dirname(os.path.abspath(__file__))
     staging_dir = os.path.join(blog_dir, "staging", slug)
@@ -114,7 +134,9 @@ def preview_post(slug):
         post = frontmatter.load(f)
 
     title = post.get("title", "") or ""
-    description = post.get("description", "") or ""
+    description_raw = post.get("description", "") or ""
+    description_html = md_to_html(description_raw)
+    description_plain = strip_markdown(description_raw)
     slug = post.get("slug", slug) or slug
     date = post.get("date", "") or ""
     image_name = post.get("image", "") or ""
@@ -159,7 +181,8 @@ def preview_post(slug):
 
     # Replace placeholders
     html = template.replace("{{title}}", title)
-    html = html.replace("{{description}}", description)
+    html = html.replace("{{description_html}}", description_html)
+    html = html.replace("{{description_plain}}", description_plain)
     html = html.replace("{{slug}}", slug)
     html = html.replace("{{date}}", date)
     html = html.replace("{{date_path}}", date_path)
@@ -193,7 +216,9 @@ def build_published_html(slug, date_path, repo_root):
         post = frontmatter.load(f)
 
     title = post.get("title", "") or ""
-    description = post.get("description", "") or ""
+    description_raw = post.get("description", "") or ""
+    description_html = md_to_html(description_raw)
+    description_plain = strip_markdown(description_raw)
     slug = post.get("slug", slug) or slug
     date = post.get("date", "") or ""
     image_name = post.get("image", "") or ""
@@ -231,7 +256,8 @@ def build_published_html(slug, date_path, repo_root):
         template = f.read()
 
     html = template.replace("{{title}}", title)
-    html = html.replace("{{description}}", description)
+    html = html.replace("{{description_html}}", description_html)
+    html = html.replace("{{description_plain}}", description_plain)
     html = html.replace("{{slug}}", slug)
     html = html.replace("{{date}}", date)
     html = html.replace("{{date_path}}", date_path)
