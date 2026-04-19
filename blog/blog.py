@@ -5,6 +5,15 @@ import frontmatter
 from PIL import Image
 from google.cloud import storage as gcs_storage
 
+FIELD_ORDER = [
+    "title", "slug", "date", "time",
+    "image", "image-alt",
+    "description",
+    "tags", "category", "subcategory",
+    "source", "type",
+    "origin", "import-date",
+]
+
 def slugify(title):
     slug = title.lower()
     slug = re.sub(r'[^a-z0-9\s-]', '', slug)
@@ -34,17 +43,8 @@ def strip_markdown(text):
 
 def write_post_file(path, post):
     """Write a frontmatter Post to file with our preferred field order."""
-    field_order = [
-        "title", "slug", "date", "time",
-        "image", "image-alt",
-        "description",
-        "tags", "category", "subcategory",
-        "source", "type",
-        "origin", "origin-date", "import-date",
-    ]
-
     lines = ["---"]
-    for field in field_order:
+    for field in FIELD_ORDER:
         value = post.metadata.get(field)
         if value is None or value == "":
             lines.append(f"{field}:")
@@ -508,27 +508,26 @@ def new_post(title):
         print(f"Draft already exists: {draft_path}")
         sys.exit(1)
 
-    template = f"""---
-title: "{title}"
-slug: {slug}
-date:
-time:
-image:
-image-alt:
-description:
-tags: []
-category:
-subcategory:
-source: original
-type: short
-origin:
-origin-date:
-import-date:
----
-"""
+    # Build template using FIELD_ORDER
+    lines = ["---"]
+    for field in FIELD_ORDER:
+        if field == "title":
+            lines.append(f'title: "{title}"')
+        elif field == "slug":
+            lines.append(f"slug: {slug}")
+        elif field == "tags":
+            lines.append("tags: []")
+        elif field == "source":
+            lines.append("source: original")
+        elif field == "type":
+            lines.append("type: short")
+        else:
+            lines.append(f"{field}:")
+    lines.append("---")
+    lines.append("")
 
     with open(draft_path, "w") as f:
-        f.write(template)
+        f.write("\n".join(lines))
 
     staging_path = os.path.join(staging_dir, slug)
     os.makedirs(staging_path, exist_ok=True)
