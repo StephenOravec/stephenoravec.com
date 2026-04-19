@@ -280,6 +280,57 @@ def build_published_html(slug, date_path, repo_root):
 
     print(f"Built: {output_path}")
 
+def fix_post(slug):
+    """Regenerate a published post's HTML without reprocessing images."""
+    blog_dir = os.path.dirname(os.path.abspath(__file__))
+    published_dir = os.path.join(blog_dir, "published")
+    repo_root = os.path.dirname(blog_dir)
+
+    # Find the post in the published folder
+    published_path = None
+    for year_dir in os.listdir(published_dir):
+        year_path = os.path.join(published_dir, year_dir)
+        if not os.path.isdir(year_path):
+            continue
+        for month_dir in os.listdir(year_path):
+            month_path = os.path.join(year_path, month_dir)
+            if not os.path.isdir(month_path):
+                continue
+            candidate = os.path.join(month_path, f"{slug}.md")
+            if os.path.exists(candidate):
+                published_path = candidate
+                break
+        if published_path:
+            break
+
+    if not published_path:
+        print(f"Published post not found: {slug}")
+        sys.exit(1)
+
+    # Load the published post to get the date
+    with open(published_path, "r") as f:
+        post = frontmatter.load(f)
+
+    post_date = post.get("date")
+    if not post_date:
+        print(f"Post has no date: {slug}")
+        sys.exit(1)
+
+    # Parse date to build path
+    if isinstance(post_date, str):
+        from datetime import datetime
+        date_obj = datetime.strptime(post_date, "%Y-%m-%d")
+    else:
+        from datetime import datetime
+        date_obj = datetime.combine(post_date, datetime.min.time())
+
+    date_path = date_obj.strftime("%Y/%m/%d")
+
+    # Build HTML using the published .md (not the draft)
+    build_published_html_from_path(published_path, slug, date_path, repo_root)
+
+    print(f"Fixed: https://stephenoravec.com/blog/{date_path}/{slug}/")
+
 def publish_post(slug):
     from datetime import date as date_module
     
@@ -337,6 +388,77 @@ def publish_post(slug):
 
     print(f"Published: https://stephenoravec.com/blog/{date_path}/{slug}/")
 
+def build_published_html_from_path(md_path, slug, date_path, repo_root):
+    blog_dir = os.path.dirname(os.path.abspath(__file__))
+    templates_dir = os.path.join(blog_dir, "templates")
+
+    with open(md_path, "r") as f:
+        post = frontmatter.load(f)
+
+    title = post.get("title", "") or ""
+    description_raw = post.get("description", "") or ""
+    description_html = md_to_html(description_raw)
+    description_plain = strip_markdown(description_raw)
+    slug = post.get("slug", slug) or slug
+    date = post.get("date", "") or ""
+    image_name = post.get("image", "") or ""
+    image_alt = post.get("image-alt", "") or ""
+
+    display_date = ""
+    if date:
+        from datetime import datetime
+        if isinstance(date, str):
+            date_obj = datetime.strptime(date, "%Y-%m-%d")
+        else:
+            date_obj = datetime.combine(date, datetime.min.time())
+        display_date = date_obj.strftime("%B %-d, %Y")
+        date = date_obj.strftime("%Y-%m-%d")
+
+    image_url = ""
+    image_url_400 = ""
+    image_url_1000 = ""
+    image_url_2000 = ""
+    og_image_url = ""
+    if image_name:
+        base = f"https://storage.googleapis.com/stephenoravec-media/blog/{date_path}"
+        image_url = f"{base}/{image_name}-1000.webp"
+        image_url_400 = f"{base}/{image_name}-400.webp"
+        image_url_1000 = f"{base}/{image_name}-1000.webp"
+        image_url_2000 = f"{base}/{image_name}-2000.webp"
+        og_image_url = f"{base}/{image_name}-og.webp"
+
+    body_content = ""
+    if post.content.strip():
+        body_content = post.content
+
+    template_path = os.path.join(templates_dir, "post.html")
+    with open(template_path, "r") as f:
+        template = f.read()
+
+    html = template.replace("{{title}}", title)
+    html = html.replace("{{description_html}}", description_html)
+    html = html.replace("{{description_plain}}", description_plain)
+    html = html.replace("{{slug}}", slug)
+    html = html.replace("{{date}}", date)
+    html = html.replace("{{date_path}}", date_path)
+    html = html.replace("{{display_date}}", display_date)
+    html = html.replace("{{image_url}}", image_url)
+    html = html.replace("{{image_url_400}}", image_url_400)
+    html = html.replace("{{image_url_1000}}", image_url_1000)
+    html = html.replace("{{image_url_2000}}", image_url_2000)
+    html = html.replace("{{image_alt}}", image_alt)
+    html = html.replace("{{og_image_url}}", og_image_url)
+    html = html.replace("{{body_content}}", body_content)
+
+    output_dir = os.path.join(repo_root, "blog", date_path, slug)
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "index.html")
+
+    with open(output_path, "w") as f:
+        f.write(html)
+
+    print(f"Built: {output_path}")
+
 def new_post(title):
     slug = slugify(title)
     
@@ -381,7 +503,7 @@ import-date:
 def main():
     if len(sys.argv) < 2:
         print("Usage: python blog.py <command> [arguments]")
-        print("Commands: new, preview, process-images, publish")
+        print("Commands: new, preview, process-images, publish, fix")
         sys.exit(1)
 
     command = sys.argv[1]
@@ -407,6 +529,11 @@ def main():
             print('Usage: python blog.py publish <slug>')
             sys.exit(1)
         publish_post(sys.argv[2])
+    elif command == "fix":
+        if len(sys.argv) < 3:
+            print('Usage: python blog.py fix <slug>')
+            sys.exit(1)
+        fix_post(sys.argv[2])
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
