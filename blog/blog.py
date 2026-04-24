@@ -680,7 +680,7 @@ def new_post(title):
 def main():
     if len(sys.argv) < 2:
         print("Usage: python blog.py <command> [arguments]")
-        print("Commands: new, preview, process-images, publish, fix")
+        print("Commands: new, preview, process-images, publish, fix, build-index")
         sys.exit(1)
 
     command = sys.argv[1]
@@ -711,6 +711,10 @@ def main():
             print('Usage: python blog.py fix <slug>')
             sys.exit(1)
         fix_post(sys.argv[2])
+    elif command == "build-index":
+        blog_dir = os.path.dirname(os.path.abspath(__file__))
+        repo_root = os.path.dirname(blog_dir)
+        build_index(repo_root)
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
