@@ -9,8 +9,9 @@ FIELD_ORDER = [
     "title", "slug", "date", "time",
     "image", "image-alt",
     "description",
-    "tags", "category", "subcategory",
-    "source", "type",
+    "category", "subcategory", "tags",
+    "layer", "type",
+    "source",
     "origin", "import-date",
 ]
 
