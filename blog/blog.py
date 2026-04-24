@@ -367,6 +367,8 @@ def fix_post(slug):
     # Build HTML using the published .md (not the draft)
     build_published_html_from_path(published_path, slug, date_path, repo_root)
 
+    build_index(repo_root)
+
     print(f"Fixed: https://stephenoravec.com/blog/{date_path}/{slug}/")
 
 def publish_post(slug):
@@ -424,6 +426,8 @@ def publish_post(slug):
     print(f"Moved draft to: {published_path}")
 
     print(f"Published: https://stephenoravec.com/blog/{date_path}/{slug}/")
+
+    build_index(repo_root)
 
 def build_published_html_from_path(md_path, slug, date_path, repo_root):
     blog_dir = os.path.dirname(os.path.abspath(__file__))
