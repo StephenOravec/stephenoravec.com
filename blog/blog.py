@@ -657,7 +657,7 @@ def new_post(title):
             lines.append(f"slug: {slug}")
         elif field == "tags":
             lines.append("tags: []")
-        elif  field == "layer":
+        elif field == "layer":
             lines.append("layer: status")
         elif field == "source":
             lines.append("source: original")
