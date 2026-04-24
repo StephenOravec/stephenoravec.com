@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The blog of Stephen Oravec.">
+    <meta name="author" content="Stephen Oravec">
+    <title>Blog | Stephen Oravec</title>
+    <meta property="og:title" content="Blog | Stephen Oravec">
+    <meta property="og:description" content="The blog of Stephen Oravec.">
+    <meta property="og:image" content="https://stephenoravec.com/images/og-image.jpg">
+    <meta property="og:url" content="https://stephenoravec.com/blog/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="StephenOravec.com">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        window.BLOG_VERSION = "{{version}}";
+    </script>
+</head>
+<body class="page-blog">
+    <div class="content-layer">
+        <header class="header">
+            <div class="header-text">
+                <h2 class="site-title"><a href="/">Stephen Oravec</a></h2>
+                <p class="subtitle">Writer, etc.</p>
+            </div>
+        </header>
+
+        <main class="main-area">
+            <h1 class="page-title">Blog</h1>
+            <div class="blog-feed" id="blog-feed"></div>
+            <div class="load-more-container">
+                <button id="load-more-button" class="load-more-button" hidden>Load more</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/menu.js"></script>
+    <script src="/js/blog-index.js"></script>
+</body>
+</html>
