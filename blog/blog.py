@@ -518,10 +518,12 @@ def new_post(title):
             lines.append(f"slug: {slug}")
         elif field == "tags":
             lines.append("tags: []")
+        elif  field == "layer":
+            lines.append("layer: status")
         elif field == "source":
             lines.append("source: original")
         elif field == "type":
-            lines.append("type: short")
+            lines.append("type:")
         else:
             lines.append(f"{field}:")
     lines.append("---")
