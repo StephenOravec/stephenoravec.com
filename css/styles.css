@@ -422,10 +422,6 @@ body {
         margin-bottom: 0.75rem;
     }
 
-    .blog-card-description {
-        font-size: 18px;
-    }
-
     .load-more-container {
         padding: 0 30px;
     }
@@ -484,10 +480,6 @@ body {
     .post-title {
         font-size: 36px;
         margin-bottom: 0.75rem;
-    }
-
-    .post-description {
-        font-size: 18px;
     }
 }
 
