@@ -327,6 +327,116 @@ body {
 }
 
 /* ================================
+   BLOG INDEX PAGE
+   ================================ */
+.page-blog {
+    background-color: #16161d;
+}
+
+.blog-feed {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.blog-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-card-title-link,
+.blog-card-image-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.blog-card-title {
+    font-size: 24px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.blog-card-date {
+    display: block;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 1rem;
+}
+
+.blog-card-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.blog-card-description {
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+.load-more-container {
+    max-width: 1000px;
+    margin: 2.5rem auto 3rem auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.load-more-button {
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid #666;
+    border-radius: 6px;
+    padding: 12px 32px;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.load-more-button:hover,
+.load-more-button:focus {
+    border-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.load-more-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+    .blog-feed {
+        padding: 0 30px;
+        gap: 3.5rem;
+    }
+
+    .blog-card-title {
+        font-size: 32px;
+        margin-bottom: 0.75rem;
+    }
+
+    .blog-card-description {
+        font-size: 18px;
+    }
+
+    .load-more-container {
+        padding: 0 30px;
+    }
+
+    .load-more-button {
+        font-size: 18px;
+        padding: 14px 40px;
+    }
+}
+
+/* ================================
    BLOG POST PAGE
    ================================ */
 .page-post {
