@@ -42,6 +42,98 @@ def strip_markdown(text):
     text = re.sub(r'\*([^*]+)\*', r'\1', text)
     return text
 
+def parse_body(text, date_path):
+    """Parse Markdown body content into HTML, including custom image syntax."""
+    if not text or not text.strip():
+        return ""
+
+    lines = text.split("\n")
+    blocks = []
+    current_block = []
+
+    # Group lines into blocks separated by blank lines
+    for line in lines:
+        if line.strip() == "":
+            if current_block:
+                blocks.append(current_block)
+                current_block = []
+        else:
+            current_block.append(line)
+    if current_block:
+        blocks.append(current_block)
+
+    html_parts = []
+    i = 0
+    while i < len(blocks):
+        block = blocks[i]
+        first_line = block[0].strip()
+
+        # Custom image block: ::image[name] possibly followed by ::alt[text] and ::caption[text]
+        if first_line.startswith("::image["):
+            image_name = first_line[len("::image["):-1] if first_line.endswith("]") else ""
+            alt_text = ""
+            caption_text = ""
+            for line in block[1:]:
+                stripped = line.strip()
+                if stripped.startswith("::alt[") and stripped.endswith("]"):
+                    alt_text = stripped[len("::alt["):-1]
+                elif stripped.startswith("::caption[") and stripped.endswith("]"):
+                    caption_text = stripped[len("::caption["):-1]
+            html_parts.append(render_figure(image_name, alt_text, caption_text, date_path))
+            i += 1
+            continue
+
+        # Heading block: # text, ## text, ### text
+        if first_line.startswith("#"):
+            level = 0
+            while level < len(first_line) and first_line[level] == "#":
+                level += 1
+            if 1 <= level <= 3:
+                heading_text = first_line[level:].strip()
+                heading_html = inline_format(heading_text)
+                html_parts.append(f"<h{level}>{heading_html}</h{level}>")
+                i += 1
+                continue
+
+        # Default: paragraph block
+        paragraph_text = " ".join(block).strip()
+        paragraph_html = inline_format(paragraph_text)
+        html_parts.append(f"<p>{paragraph_html}</p>")
+        i += 1
+
+    return "\n".join(html_parts)
+
+def inline_format(text):
+    """Apply inline Markdown formatting: links, bold, italics."""
+    if not text:
+        return ""
+    # Links: [text](url) — must be processed before italics so brackets don't confuse the regex
+    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+    # Bold: **text**
+    text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
+    # Italics: *text*
+    text = re.sub(r'\*([^*]+)\*', r'<em>\1</em>', text)
+    return text
+
+def render_figure(image_name, alt_text, caption_text, date_path):
+    """Render a body image as a <figure> with responsive srcset and optional caption."""
+    if not image_name:
+        return ""
+    base = f"https://storage.googleapis.com/stephenoravec-media/blog/{date_path}"
+    img_html = (
+        f'<img src="{base}/{image_name}-1000.webp" '
+        f'srcset="{base}/{image_name}-400.webp 400w, '
+        f'{base}/{image_name}-1000.webp 1000w, '
+        f'{base}/{image_name}-2000.webp 2000w" '
+        f'sizes="(max-width: 768px) 100vw, 1000px" '
+        f'alt="{alt_text}" '
+        f'loading="lazy">'
+    )
+    if caption_text:
+        return f'<figure>{img_html}<figcaption>{caption_text}</figcaption></figure>'
+    else:
+        return f'<figure>{img_html}</figure>'
+
 def write_post_file(path, post):
     """Write a frontmatter Post to file with our preferred field order."""
     lines = ["---"]
