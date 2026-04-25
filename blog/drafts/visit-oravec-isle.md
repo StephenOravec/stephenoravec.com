@@ -6,13 +6,13 @@ time:
 image: oravec-isle-aerial
 image-alt: Aerial view of Oravec Isle in Nifty Island showing a small sandy island with palm trees, collectible Blooms, and a character standing at the center
 description: "Discover the pleasant little Oravec Isle experience in Nifty Island: a relaxing sandy getaway with 10 Blooms to collect."
-tags: [metaverse, Nifty Island]
 category:
 subcategory:
-source: original
+tags: [metaverse, Nifty Island]
+layer: status
 type: article
+source: original
 origin:
-origin-date:
 import-date:
 ---
 
