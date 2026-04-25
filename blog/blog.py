@@ -300,9 +300,7 @@ def preview_post(slug):
         og_image_url = f"{base}/{image_name}-og.webp"
 
     # Body content (empty for short posts)
-    body_content = ""
-    if post.content.strip():
-        body_content = post.content
+    body_content = parse_body(post.content, date_path) if date_path else ""
 
     # Read template
     template_path = os.path.join(templates_dir, "post.html")
@@ -377,9 +375,7 @@ def build_published_html(slug, date_path, repo_root):
         image_url_2000 = f"{base}/{image_name}-2000.webp"
         og_image_url = f"{base}/{image_name}-og.webp"
 
-    body_content = ""
-    if post.content.strip():
-        body_content = post.content
+    body_content = parse_body(post.content, date_path)
 
     template_path = os.path.join(templates_dir, "post.html")
     with open(template_path, "r") as f:
@@ -560,9 +556,7 @@ def build_published_html_from_path(md_path, slug, date_path, repo_root):
         image_url_2000 = f"{base}/{image_name}-2000.webp"
         og_image_url = f"{base}/{image_name}-og.webp"
 
-    body_content = ""
-    if post.content.strip():
-        body_content = post.content
+    body_content = parse_body(post.content, date_path)
 
     template_path = os.path.join(templates_dir, "post.html")
     with open(template_path, "r") as f:
@@ -662,6 +656,10 @@ def build_index(repo_root):
                         image_url_1000 = f"{base}/{image_name}-1000.webp"
                         image_url_2000 = f"{base}/{image_name}-2000.webp"
 
+                    body_html = None
+                    if has_body:
+                        body_html = parse_body(post.content, date_path)
+
                     posts.append({
                         "title": title,
                         "slug": slug,
@@ -676,7 +674,7 @@ def build_index(repo_root):
                         "image_alt": image_alt,
                         "layer": layer,
                         "type": post_type,
-                        "body_html": None,
+                        "body_html": body_html,
                         "has_body": has_body,
                     })
 
