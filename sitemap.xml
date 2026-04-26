@@ -12,8 +12,13 @@
   </url>
   <url>
     <loc>https://stephenoravec.com/blog/</loc>
-    <lastmod>2026-04-24</lastmod>
+    <lastmod>2026-04-25</lastmod>
     <priority>0.8</priority>
+  </url>
+  <url>
+  <loc>https://stephenoravec.com/blog/2026/04/25/visit-oravec-isle/</loc>
+  <lastmod>2026-04-25</lastmod>
+  <priority>0.6</priority>
   </url>
   <url>
     <loc>https://stephenoravec.com/blog/2026/04/19/wiami-breach-alert/</loc>
