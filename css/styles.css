@@ -381,6 +381,86 @@ body {
     font-size: 16px;
 }
 
+.blog-card-expand-button {
+    align-self: flex-start;
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid #666;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.blog-card-expand-button:hover,
+.blog-card-expand-button:focus {
+    border-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.blog-card-body {
+    margin-top: 1.5rem;
+}
+
+.blog-card-body p {
+    line-height: 1.6;
+    font-size: 16px;
+    margin-bottom: 1.5rem;
+}
+
+.blog-card-body p:last-child {
+    margin-bottom: 0;
+}
+
+.blog-card-body h2 {
+    font-size: 22px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.blog-card-body h3 {
+    font-size: 18px;
+    font-weight: normal;
+    letter-spacing: 0.4px;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.blog-card-body figure {
+    margin: 1.5rem 0;
+}
+
+.blog-card-body figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+}
+
+.blog-card-body figcaption {
+    font-size: 14px;
+    font-style: italic;
+    color: #888;
+    margin-top: 0.75rem;
+    text-align: center;
+}
+
+.blog-card-body a {
+    color: #ffffff;
+    text-decoration: underline;
+    text-decoration-color: #666;
+    text-underline-offset: 3px;
+}
+
+.blog-card-body a:hover {
+    text-decoration-color: #ffffff;
+}
+
 .load-more-container {
     max-width: 1000px;
     margin: 2.5rem auto 3rem auto;
@@ -420,6 +500,19 @@ body {
     .blog-card-title {
         font-size: 32px;
         margin-bottom: 0.75rem;
+    }
+
+    .blog-card-expand-button {
+        font-size: 15px;
+        padding: 10px 24px;
+    }
+
+    .blog-card-body h2 {
+        font-size: 28px;
+    }
+
+    .blog-card-body h3 {
+        font-size: 22px;
     }
 
     .load-more-container {
