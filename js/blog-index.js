@@ -60,15 +60,15 @@
             expandButton.addEventListener('click', function() {
                 const isExpanded = expandButton.getAttribute('aria-expanded') === 'true';
                 if (isExpanded) {
-                    // Get card position before collapsing
-                    const cardTop = article.getBoundingClientRect().top;
                     bodyContainer.hidden = true;
                     expandButton.setAttribute('aria-expanded', 'false');
                     expandButton.textContent = 'Read more';
-                    // After collapsing, restore the card to the same viewport position
-                    const newCardTop = article.getBoundingClientRect().top;
-                    window.scrollBy(0, newCardTop - cardTop);
+                    if (savedScrollY !== null) {
+                        window.scrollTo(0, savedScrollY);
+                        savedScrollY = null;
+                    }
                 } else {
+                    savedScrollY = window.scrollY;
                     bodyContainer.hidden = false;
                     expandButton.setAttribute('aria-expanded', 'true');
                     expandButton.textContent = 'Collapse';
