@@ -404,6 +404,7 @@ body {
 
 .blog-card-expand-button[aria-expanded="true"] {
     order: 3;
+    margin-top: 1.5rem;
 }
 
 .blog-card-body {
