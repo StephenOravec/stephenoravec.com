@@ -108,7 +108,14 @@ def inline_format(text):
     if not text:
         return ""
     # Links: [text](url) — must be processed before italics so brackets don't confuse the regex
-    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+    def link_replacer(match):
+        link_text = match.group(1)
+        url = match.group(2)
+        if url.startswith("http://") or url.startswith("https://"):
+            return f'<a href="{url}" target="_blank" rel="noopener noreferrer">{link_text}</a>'
+        else:
+            return f'<a href="{url}">{link_text}</a>'
+    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', link_replacer, text)
     # Bold: **text**
     text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
     # Italics: *text*
