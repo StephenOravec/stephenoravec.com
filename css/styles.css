@@ -393,6 +393,7 @@ body {
     cursor: pointer;
     margin-top: 1rem;
     transition: border-color 0.2s ease, background-color 0.2s ease;
+    order: 1;
 }
 
 .blog-card-expand-button:hover,
@@ -401,8 +402,13 @@ body {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+.blog-card-expand-button[aria-expanded="true"] {
+    order: 3;
+}
+
 .blog-card-body {
     margin-top: 1.5rem;
+    order: 2;
 }
 
 .blog-card-body p {
