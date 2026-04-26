@@ -17,5 +17,6 @@ tags:
 - World of Warcraft
 time: null
 title: Spring Break 2026
-type: short
+layer: status
+type: screenshot
 ---
