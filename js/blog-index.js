@@ -63,12 +63,8 @@
                     bodyContainer.hidden = true;
                     expandButton.setAttribute('aria-expanded', 'false');
                     expandButton.textContent = 'Read more';
-                    if (savedScrollY !== null) {
-                        window.scrollTo(0, savedScrollY);
-                        savedScrollY = null;
-                    }
+                    article.scrollIntoView({ behavior: 'auto', block: 'start' });
                 } else {
-                    savedScrollY = window.scrollY;
                     bodyContainer.hidden = false;
                     expandButton.setAttribute('aria-expanded', 'true');
                     expandButton.textContent = 'Collapse';
