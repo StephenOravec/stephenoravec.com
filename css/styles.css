@@ -382,7 +382,7 @@ body {
 }
 
 .blog-card-expand-button {
-    align-self: flex-start;
+    align-self: center;
     background-color: transparent;
     color: #ffffff;
     border: 1px solid #666;
