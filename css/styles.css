@@ -441,6 +441,10 @@ body {
     margin: 1.5rem 0;
 }
 
+.blog-card-body > :first-child {
+    margin-top: 0;
+}
+
 .blog-card-body figure img {
     width: 100%;
     height: auto;
