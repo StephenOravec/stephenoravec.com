@@ -10,7 +10,8 @@ tags: [metaverse, Wilder World]
 category: gamelog
 subcategory: Wilder World
 source: original
-type: short
+layer: status
+type: screenshot
 origin:
 origin-date:
 import-date:
