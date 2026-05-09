@@ -1,0 +1,10 @@
+{
+  "languages": {
+    "Python": {
+      "language_servers": ["pyright"],
+      "python": {
+        "pythonPath": "blog/.venv/bin/python"
+      }
+    }
+  }
+}
