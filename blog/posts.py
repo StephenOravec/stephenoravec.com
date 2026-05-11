@@ -8,7 +8,7 @@ import frontmatter
 
 from render import render_post, write_post_html
 from images import process_images
-from site import build_index
+from feeds import build_index
 
 
 FIELD_ORDER = [

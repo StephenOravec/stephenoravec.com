@@ -2,7 +2,7 @@ import sys
 
 from posts import new_post, preview_post, publish_post, fix_post
 from images import process_images
-from site import build_index
+from feeds import build_index
 
 
 def main():
