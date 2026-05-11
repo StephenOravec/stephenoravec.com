@@ -1,6 +1,6 @@
 import sys
 
-from posts import new_post, preview_post, publish_post, fix_post
+from posts import new_post, preview_post, publish_post, fix_post, validate_all
 from images import process_images
 from feeds import build_index
 
@@ -8,7 +8,7 @@ from feeds import build_index
 def main():
     if len(sys.argv) < 2:
         print("Usage: python blog.py <command> [arguments]")
-        print("Commands: new, preview, process-images, publish, fix, build-index")
+        print("Commands: new, preview, process-images, publish, fix, build-index, validate")
         sys.exit(1)
 
     command = sys.argv[1]
@@ -44,6 +44,15 @@ def main():
         blog_dir = os.path.dirname(os.path.abspath(__file__))
         repo_root = os.path.dirname(blog_dir)
         build_index(repo_root)
+    elif command == "validate":
+        issues = validate_all()
+        if not issues:
+            print("All posts have valid slugs.")
+        else:
+            print(f"Found {len(issues)} issue(s):")
+            for path, issue in issues:
+                print(f"  {path}: {issue}")
+            sys.exit(1)
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
