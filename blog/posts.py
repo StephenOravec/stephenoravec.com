@@ -51,12 +51,6 @@ def slugify(title):
 
 
 def validate_slug(slug, exclude_path=None):
-    """Check that a slug is usable. Returns (is_valid, error_message).
-
-    Fails if the slug is empty, reserved, or already in use by another post.
-    exclude_path lets the caller exclude one specific .md file from the
-    uniqueness check (used during publish to ignore the draft being published).
-    """
     if not slug:
         return False, "Slug is empty."
     if slug in RESERVED_SLUGS:
@@ -71,9 +65,6 @@ def validate_slug(slug, exclude_path=None):
 
 
 def _find_slug_usage(slug, exclude_path=None):
-    """Search drafts/ and published/ for any post using this slug.
-    Returns the path of the first match, or None.
-    """
     blog_dir = os.path.dirname(os.path.abspath(__file__))
     drafts_dir = os.path.join(blog_dir, "drafts")
     published_dir = os.path.join(blog_dir, "published")
@@ -110,11 +101,8 @@ def _find_slug_usage(slug, exclude_path=None):
 
 
 def validate_all():
-    """Scan every draft and published post. Returns list of (path, issue) tuples.
-    Empty list means everything is valid.
-    """
     issues = []
-    seen = {}  # slug -> path that first claimed it
+    seen = {}
 
     blog_dir = os.path.dirname(os.path.abspath(__file__))
     drafts_dir = os.path.join(blog_dir, "drafts")
@@ -156,6 +144,58 @@ def validate_all():
     return issues
 
 
+def _all_existing_urns():
+    """Collect every URN already present in drafts and published posts."""
+    blog_dir = os.path.dirname(os.path.abspath(__file__))
+    drafts_dir = os.path.join(blog_dir, "drafts")
+    published_dir = os.path.join(blog_dir, "published")
+
+    urns = set()
+    paths = []
+
+    if os.path.exists(drafts_dir):
+        for filename in os.listdir(drafts_dir):
+            if filename.endswith(".md"):
+                paths.append(os.path.join(drafts_dir, filename))
+
+    if os.path.exists(published_dir):
+        for year_dir in os.listdir(published_dir):
+            year_path = os.path.join(published_dir, year_dir)
+            if not os.path.isdir(year_path):
+                continue
+            for month_dir in os.listdir(year_path):
+                month_path = os.path.join(year_path, month_dir)
+                if not os.path.isdir(month_path):
+                    continue
+                for filename in os.listdir(month_path):
+                    if filename.endswith(".md"):
+                        paths.append(os.path.join(month_path, filename))
+
+    for md_path in paths:
+        with open(md_path, "r") as f:
+            post = frontmatter.load(f)
+        urn = post.get("urn")
+        if urn:
+            urns.add(str(urn))
+
+    return urns
+
+
+def _generate_urn(date_obj):
+    """Generate a unique URN for a natively-published post.
+
+    Format: 14-digit YYYYMMDDHHMMSS. For native blog posts, the time portion
+    starts at 000000 and increments by 1 for each collision on the same date.
+    """
+    existing = _all_existing_urns()
+    date_prefix = date_obj.strftime("%Y%m%d")
+    for seconds in range(1000000):  # one million slots per day, more than enough
+        candidate = f"{date_prefix}{seconds:06d}"
+        if candidate not in existing:
+            return candidate
+    raise RuntimeError(f"Exhausted URN slots for {date_prefix}.")
+
+
 def write_post_file(path, post):
     """Write a frontmatter Post to file with our preferred field order."""
     lines = ["---"]
@@ -169,7 +209,9 @@ def write_post_file(path, post):
             else:
                 items = ", ".join(str(v) for v in value)
                 lines.append(f"{field}: [{items}]")
-        elif isinstance(value, str) and (":" in value or "*" in value or "'" in value):
+        elif isinstance(value, str) and (
+            ":" in value or "*" in value or "'" in value or value.isdigit()
+        ):
             escaped = value.replace("'", "''")
             lines.append(f"{field}: '{escaped}'")
         else:
@@ -185,7 +227,6 @@ def write_post_file(path, post):
 
 
 def _parse_post_date(post):
-    """Parse the post's date frontmatter. Returns (date_obj, date_path) or (None, '')."""
     post_date = post.get("date")
     if not post_date:
         return None, ""
@@ -197,7 +238,6 @@ def _parse_post_date(post):
 
 
 def _find_published_path(slug, published_dir):
-    """Search published/YYYY/MM/ for slug.md. Returns full path or None."""
     if not os.path.exists(published_dir):
         return None
     for year_dir in os.listdir(published_dir):
@@ -238,6 +278,8 @@ def new_post(title):
             lines.append(f'title: "{title}"')
         elif field == "slug":
             lines.append(f"slug: {slug}")
+        elif field == "urn":
+            lines.append("urn:")
         elif field == "legacy_urls":
             lines.append("legacy_urls: []")
         elif field == "tags":
@@ -280,7 +322,9 @@ def preview_post(slug):
     _, date_path = _parse_post_date(post)
 
     html = render_post(post, actual_slug, date_path, templates_dir)
-    output_dir = os.path.join(blog_dir, "preview", date_path, actual_slug)
+    output_dir = os.path.join(
+        blog_dir, "preview", *post_output_subpath(actual_slug, date_path)
+    )
     output_path = write_post_html(html, output_dir)
 
     print(f"Built post: {output_path}")
@@ -312,12 +356,18 @@ def publish_post(slug):
 
     date_obj, date_path = _parse_post_date(post)
 
+    if not post.get("urn"):
+        post["urn"] = _generate_urn(date_obj)
+        print(f"Stamped URN: {post['urn']}")
+
     write_post_file(draft_path, post)
 
     process_images(slug, date_path)
 
     html = render_post(post, actual_slug, date_path, templates_dir)
-    output_dir = os.path.join(repo_root, "blog", date_path, actual_slug)
+    output_dir = os.path.join(
+        repo_root, *post_output_subpath(actual_slug, date_path)
+    )
     output_path = write_post_html(html, output_dir)
     print(f"Built: {output_path}")
 
@@ -328,7 +378,7 @@ def publish_post(slug):
     shutil.move(draft_path, published_path)
     print(f"Moved draft to: {published_path}")
 
-    print(f"Published: https://stephenoravec.com/blog/{date_path}/{slug}/")
+    print(f"Published: https://stephenoravec.com{post_url_path(actual_slug, date_path)}")
 
     build_index(repo_root)
 
@@ -356,10 +406,12 @@ def fix_post(slug):
 
     actual_slug = post.get("slug", slug) or slug
     html = render_post(post, actual_slug, date_path, templates_dir)
-    output_dir = os.path.join(repo_root, "blog", date_path, actual_slug)
+    output_dir = os.path.join(
+        repo_root, *post_output_subpath(actual_slug, date_path)
+    )
     output_path = write_post_html(html, output_dir)
     print(f"Built: {output_path}")
 
     build_index(repo_root)
 
-    print(f"Fixed: https://stephenoravec.com/blog/{date_path}/{slug}/")
+    print(f"Fixed: https://stephenoravec.com{post_url_path(actual_slug, date_path)}")
