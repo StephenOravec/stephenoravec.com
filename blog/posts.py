@@ -13,7 +13,7 @@ from config import post_output_subpath, post_url_path
 
 
 FIELD_ORDER = [
-    "title", "slug", "legacy_urls", "date", "time",
+    "title", "urn", "slug", "legacy_urls", "date", "time",
     "image", "image-alt",
     "description",
     "category", "subcategory", "tags",
