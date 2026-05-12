@@ -48,6 +48,7 @@ def build_index(repo_root):
                     display_date = date_obj.strftime("%B %-d, %Y")
 
                     slug = post.get("slug", "") or ""
+                    urn = post.get("urn", "") or ""
                     title = post.get("title", "") or ""
                     description_raw = post.get("description", "") or ""
                     description_html = md_to_html(description_raw)
@@ -78,6 +79,7 @@ def build_index(repo_root):
 
                     posts.append({
                         "title": title,
+                        "urn": urn,
                         "slug": slug,
                         "date": date_str,
                         "display_date": display_date,
