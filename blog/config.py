@@ -21,7 +21,7 @@ _data = _load()
 
 URL_SCHEME = _data.get("url_scheme", "collapsed")
 
-_SUPPORTED_URL_SCHEMES = {"collapsed"}
+_SUPPORTED_URL_SCHEMES = {"collapsed", "expanded"}
 if URL_SCHEME not in _SUPPORTED_URL_SCHEMES:
     raise ValueError(
         f"bountiful.config.json: 'url_scheme' value '{URL_SCHEME}' is not supported. "
@@ -35,6 +35,8 @@ def post_output_subpath(slug, date_path):
     """
     if URL_SCHEME == "collapsed":
         return (slug,)
+    if URL_SCHEME == "expanded":
+        return ("blog", *date_path.split("/"), slug)
     raise NotImplementedError(f"URL scheme '{URL_SCHEME}' not implemented.")
 
 
@@ -42,4 +44,6 @@ def post_url_path(slug, date_path):
     """Return the post's URL path (starts with /, ends with /)."""
     if URL_SCHEME == "collapsed":
         return f"/{slug}/"
+    if URL_SCHEME == "expanded":
+        return f"/blog/{date_path}/{slug}/"
     raise NotImplementedError(f"URL scheme '{URL_SCHEME}' not implemented.")
