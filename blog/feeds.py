@@ -43,13 +43,13 @@ def build_index(repo_root):
                     else:
                         date_obj = datetime.combine(post_date, datetime.min.time())
 
-                    date_str = date_obj.strftime("%Y-%m-%d")
-                    date_path = date_obj.strftime("%Y/%m/%d")
-                    display_date = date_obj.strftime("%B %-d, %Y")
-                    
                     slug = post.get("slug")
                     if not slug:
                         continue
+                    
+                    date_str = date_obj.strftime("%Y-%m-%d")
+                    date_path = date_obj.strftime("%Y/%m/%d")
+                    display_date = date_obj.strftime("%B %-d, %Y")
                     
                     urn = post.get("urn", "") or ""
                     title = post.get("title", "") or ""
