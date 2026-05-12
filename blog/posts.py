@@ -27,7 +27,7 @@ FIELD_ORDER = [
 # planned site paths, or common web conventions. Adjust as site grows.
 RESERVED_SLUGS = {
     # Existing or planned root paths on stephenoravec.com
-    "about", "blog", "books", "cablepunk", "games", "inventory", "photogrpahy", "profiles",
+    "about", "blog", "books", "cablepunk", "games", "inventory", "photography", "profiles",
     "reputation", "resources", "synthography", "videogames", "websites",
     # Web conventions
     "index", "404", "robots", "sitemap",
