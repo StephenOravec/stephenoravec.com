@@ -1,5 +1,6 @@
 ---
 title: Visit Oravec Isle!
+urn: '20260425000000'
 slug: visit-oravec-isle
 date: 2026-04-25
 time:
