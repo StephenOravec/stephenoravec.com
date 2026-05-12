@@ -46,8 +46,11 @@ def build_index(repo_root):
                     date_str = date_obj.strftime("%Y-%m-%d")
                     date_path = date_obj.strftime("%Y/%m/%d")
                     display_date = date_obj.strftime("%B %-d, %Y")
-
-                    slug = post.get("slug", "") or ""
+                    
+                    slug = post.get("slug")
+                    if not slug:
+                        continue
+                    
                     urn = post.get("urn", "") or ""
                     title = post.get("title", "") or ""
                     description_raw = post.get("description", "") or ""
