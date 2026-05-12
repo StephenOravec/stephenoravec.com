@@ -9,6 +9,7 @@ import frontmatter
 from render import render_post, write_post_html
 from images import process_images
 from feeds import build_index
+from config import post_output_subpath, post_url_path
 
 
 FIELD_ORDER = [
