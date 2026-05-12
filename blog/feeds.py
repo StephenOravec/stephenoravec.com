@@ -4,6 +4,7 @@ from datetime import datetime
 
 import frontmatter
 
+from config import post_url_path
 from render import md_to_html, parse_body
 
 
@@ -80,7 +81,7 @@ def build_index(repo_root):
                         "slug": slug,
                         "date": date_str,
                         "display_date": display_date,
-                        "url": f"/blog/{date_path}/{slug}/",
+                        "url": post_url_path(slug, date_path),
                         "description_html": description_html,
                         "image_url": image_url,
                         "image_url_400": image_url_400,
