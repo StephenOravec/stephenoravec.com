@@ -1,15 +1,16 @@
+import os
 import sys
 
 from posts import new_post, preview_post, publish_post, fix_post, validate_all, rebuild
 from images import process_images
 from blog import build_index
-from feeds import build_routes
+from feeds import build_routes, build_sitemap
 
 
 def main():
     if len(sys.argv) < 2:
         print("Usage: python publisher.py <command> [arguments]")
-        print("Commands: new, preview, process-images, publish, fix, build-index, validate, build-routes, rebuild")
+        print("Commands: new, preview, process-images, publish, fix, build-index, validate, build-routes, build-sitemap, rebuild")
         sys.exit(1)
 
     command = sys.argv[1]
@@ -43,16 +44,18 @@ def main():
     elif command == "rebuild":
         rebuild()
     elif command == "build-index":
-        import os
         blog_dir = os.path.dirname(os.path.abspath(__file__))
         repo_root = os.path.dirname(blog_dir)
         build_index(repo_root)
     elif command == "build-routes":
-        import os
         publisher_dir = os.path.dirname(os.path.abspath(__file__))
         repo_root = os.path.dirname(publisher_dir)
         from feeds import build_routes
         build_routes(repo_root)
+    elif command == "build-sitemap":
+        publisher_dir = os.path.dirname(os.path.abspath(__file__))
+        repo_root = os.path.dirname(publisher_dir)
+        build_sitemap(repo_root)
     elif command == "validate":
         issues = validate_all()
         if not issues:

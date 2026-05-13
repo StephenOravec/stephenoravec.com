@@ -10,7 +10,7 @@ from config import post_output_subpath, post_url_path
 from render import render_post, write_post_html
 from images import process_images
 from blog import build_index
-from feeds import build_routes
+from feeds import build_routes, build_sitemap
 
 
 FIELD_ORDER = [
@@ -387,6 +387,7 @@ def publish_post(slug):
 
     build_index(repo_root)
     build_routes(repo_root)
+    build_sitemap(repo_root)
 
 
 def fix_post(slug):
@@ -414,6 +415,7 @@ def fix_post(slug):
 
     build_index(repo_root)
     build_routes(repo_root)
+    build_sitemap(repo_root)
 
     print(f"Fixed: https://stephenoravec.com{post_url_path(actual_slug, date_path)}")
 
@@ -457,5 +459,6 @@ def rebuild():
 
     build_index(repo_root)
     build_routes(repo_root)
+    build_sitemap(repo_root)
 
     print("Rebuild complete.")
