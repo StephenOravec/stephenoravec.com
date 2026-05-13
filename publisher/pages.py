@@ -1,3 +1,8 @@
+"""Static page metadata for sitemap generation.
+Edit this list when you add or remove top-level site sections.
+"""
+
+
 PAGES = [
     {"url": "/", "lastmod": "2026-02-05", "priority": "1.0"},
     {"url": "/cablepunk", "lastmod": "2026-05-02", "priority": "0.8"},
