@@ -2,7 +2,8 @@ import sys
 
 from posts import new_post, preview_post, publish_post, fix_post, validate_all, rebuild
 from images import process_images
-from feeds import build_index
+from blog import build_index
+from feeds import build_routes
 
 
 def main():

@@ -6,10 +6,11 @@ from datetime import date as date_module, datetime
 
 import frontmatter
 
+from config import post_output_subpath, post_url_path
 from render import render_post, write_post_html
 from images import process_images
-from feeds import build_index, build_routes
-from config import post_output_subpath, post_url_path
+from blog import build_index
+from feeds import build_routes
 
 
 FIELD_ORDER = [
