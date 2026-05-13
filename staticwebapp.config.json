@@ -1,32 +1,35 @@
 {
   "routes": [
     {
-      "route": "/blog/drafts/*",
+      "route": "/publisher/*",
       "statusCode": 404
     },
     {
-      "route": "/blog/staging/*",
-      "statusCode": 404
+      "route": "/spring-break-2026/",
+      "rewrite": "/blog/2026/04/16/spring-break-2026/index.html"
     },
     {
-      "route": "/blog/templates/*",
-      "statusCode": 404
+      "route": "/blog/2026/04/16/spring-break-2026/",
+      "redirect": "/spring-break-2026/",
+      "statusCode": 301
     },
     {
-      "route": "/blog/output/*",
-      "statusCode": 404
+      "route": "/visit-oravec-isle/",
+      "rewrite": "/blog/2026/04/25/visit-oravec-isle/index.html"
     },
     {
-      "route": "/blog/venv/*",
-      "statusCode": 404
+      "route": "/blog/2026/04/25/visit-oravec-isle/",
+      "redirect": "/visit-oravec-isle/",
+      "statusCode": 301
     },
     {
-      "route": "/blog/blog.py",
-      "statusCode": 404
+      "route": "/wiami-breach-alert/",
+      "rewrite": "/blog/2026/04/19/wiami-breach-alert/index.html"
     },
     {
-      "route": "/blog/requirements.txt",
-      "statusCode": 404
+      "route": "/blog/2026/04/19/wiami-breach-alert/",
+      "redirect": "/wiami-breach-alert/",
+      "statusCode": 301
     }
   ],
   "responseOverrides": {

@@ -8,7 +8,7 @@ import frontmatter
 
 from render import render_post, write_post_html
 from images import process_images
-from feeds import build_index
+from feeds import build_index, build_routes
 from config import post_output_subpath, post_url_path
 
 
@@ -236,6 +236,15 @@ def _parse_post_date(post):
         date_obj = datetime.combine(post_date, datetime.min.time())
     return date_obj, date_obj.strftime("%Y/%m/%d")
 
+def _render_post_to_disk(post, slug_fallback, date_path, templates_dir, repo_root):
+    """Render a post and write its HTML to the canonical filesystem location.
+    Returns the actual slug used (frontmatter wins over fallback)."""
+    actual_slug = post.get("slug", slug_fallback) or slug_fallback
+    html = render_post(post, actual_slug, date_path, templates_dir)
+    output_dir = os.path.join(repo_root, *post_output_subpath(actual_slug, date_path))
+    output_path = write_post_html(html, output_dir)
+    print(f"Built: {output_path}")
+    return actual_slug
 
 def _find_published_path(slug, published_dir):
     if not os.path.exists(published_dir):
@@ -364,12 +373,7 @@ def publish_post(slug):
 
     process_images(slug, date_path)
 
-    html = render_post(post, actual_slug, date_path, templates_dir)
-    output_dir = os.path.join(
-        repo_root, *post_output_subpath(actual_slug, date_path)
-    )
-    output_path = write_post_html(html, output_dir)
-    print(f"Built: {output_path}")
+    _render_post_to_disk(post, slug, date_path, templates_dir, repo_root)
 
     year = date_obj.strftime("%Y")
     month = date_obj.strftime("%m")
@@ -381,6 +385,7 @@ def publish_post(slug):
     print(f"Published: https://stephenoravec.com{post_url_path(actual_slug, date_path)}")
 
     build_index(repo_root)
+    build_routes(repo_root)
 
 
 def fix_post(slug):
@@ -404,14 +409,52 @@ def fix_post(slug):
 
     _, date_path = _parse_post_date(post)
 
-    actual_slug = post.get("slug", slug) or slug
-    html = render_post(post, actual_slug, date_path, templates_dir)
-    output_dir = os.path.join(
-        repo_root, *post_output_subpath(actual_slug, date_path)
-    )
-    output_path = write_post_html(html, output_dir)
-    print(f"Built: {output_path}")
+    actual_slug = _render_post_to_disk(post, slug, date_path, templates_dir, repo_root)
 
     build_index(repo_root)
+    build_routes(repo_root)
 
     print(f"Fixed: https://stephenoravec.com{post_url_path(actual_slug, date_path)}")
+
+
+def rebuild():
+    """Regenerate all post HTML, the index, and the routes file.
+    Use this after changing url_scheme or anything else that affects all posts at once.
+    """
+    publisher_dir = os.path.dirname(os.path.abspath(__file__))
+    published_dir = os.path.join(publisher_dir, "published")
+    templates_dir = os.path.join(publisher_dir, "templates")
+    repo_root = os.path.dirname(publisher_dir)
+
+    count = 0
+    if os.path.exists(published_dir):
+        for year_dir in sorted(os.listdir(published_dir)):
+            year_path = os.path.join(published_dir, year_dir)
+            if not os.path.isdir(year_path):
+                continue
+            for month_dir in sorted(os.listdir(year_path)):
+                month_path = os.path.join(year_path, month_dir)
+                if not os.path.isdir(month_path):
+                    continue
+                for filename in sorted(os.listdir(month_path)):
+                    if not filename.endswith(".md"):
+                        continue
+                    md_path = os.path.join(month_path, filename)
+                    with open(md_path, "r") as f:
+                        post = frontmatter.load(f)
+
+                    if not post.get("date"):
+                        continue
+
+                    _, date_path = _parse_post_date(post)
+                    slug_fallback = filename[:-3]  # strip ".md"
+
+                    _render_post_to_disk(post, slug_fallback, date_path, templates_dir, repo_root)
+                    count += 1
+
+    print(f"Rendered {count} posts")
+
+    build_index(repo_root)
+    build_routes(repo_root)
+
+    print("Rebuild complete.")

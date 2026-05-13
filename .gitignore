@@ -1,5 +1,5 @@
-blog/preview/
-blog/staging/
-blog/.venv/
+publisher/preview/
+publisher/staging/
+publisher/.venv/
 
 __pycache__/

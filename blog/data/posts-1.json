@@ -2,10 +2,11 @@
   "posts": [
     {
       "title": "Visit Oravec Isle!",
+      "urn": "20260425000000",
       "slug": "visit-oravec-isle",
       "date": "2026-04-25",
       "display_date": "April 25, 2026",
-      "url": "/blog/2026/04/25/visit-oravec-isle/",
+      "url": "/visit-oravec-isle/",
       "description_html": "Discover the pleasant little Oravec Isle experience in Nifty Island: a relaxing sandy getaway with 10 Blooms to collect.",
       "image_url": "https://storage.googleapis.com/stephenoravec-media/blog/2026/04/25/oravec-isle-aerial-1000.webp",
       "image_url_400": "https://storage.googleapis.com/stephenoravec-media/blog/2026/04/25/oravec-isle-aerial-400.webp",
@@ -19,10 +20,11 @@
     },
     {
       "title": "Wiami Breach Alert",
+      "urn": "20260419000000",
       "slug": "wiami-breach-alert",
       "date": "2026-04-19",
       "display_date": "April 19, 2026",
-      "url": "/blog/2026/04/19/wiami-breach-alert/",
+      "url": "/wiami-breach-alert/",
       "description_html": "Exploring the Open World in <em>Wilder World</em>.",
       "image_url": "https://storage.googleapis.com/stephenoravec-media/blog/2026/04/19/wiami-open-world-1000.webp",
       "image_url_400": "https://storage.googleapis.com/stephenoravec-media/blog/2026/04/19/wiami-open-world-400.webp",
@@ -36,10 +38,11 @@
     },
     {
       "title": "Spring Break 2026",
+      "urn": "20260416000000",
       "slug": "spring-break-2026",
       "date": "2026-04-16",
       "display_date": "April 16, 2026",
-      "url": "/blog/2026/04/16/spring-break-2026/",
+      "url": "/spring-break-2026/",
       "description_html": "Just catching some rays at the Sunwell in <em>World of Warcraft: Midnight</em>.",
       "image_url": "https://storage.googleapis.com/stephenoravec-media/blog/2026/04/16/spring-break-sunwell-1000.webp",
       "image_url_400": "https://storage.googleapis.com/stephenoravec-media/blog/2026/04/16/spring-break-sunwell-400.webp",

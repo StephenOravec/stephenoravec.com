@@ -31,13 +31,10 @@ if URL_SCHEME not in _SUPPORTED_URL_SCHEMES:
 
 def post_output_subpath(slug, date_path):
     """Return the path segments from repo root to a post's directory.
-    Caller is expected to os.path.join(repo_root, *segments).
+    Always under blog/YYYY/MM/DD/slug/ regardless of url_scheme — the
+    url_scheme only affects URL form, not filesystem layout.
     """
-    if URL_SCHEME == "collapsed":
-        return (slug,)
-    if URL_SCHEME == "expanded":
-        return ("blog", *date_path.split("/"), slug)
-    raise NotImplementedError(f"URL scheme '{URL_SCHEME}' not implemented.")
+    return ("blog", *date_path.split("/"), slug)
 
 
 def post_url_path(slug, date_path):
