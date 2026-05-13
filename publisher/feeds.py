@@ -5,6 +5,7 @@ from datetime import datetime
 import frontmatter
 
 from config import URL_SCHEME, post_url_path
+from pages import PAGES
 
 
 def build_routes(repo_root):
@@ -101,3 +102,90 @@ def build_routes(repo_root):
 
     print(f"Wrote: {config_path}")
     print(f"Built routes: {len(routes)} rules")
+
+
+def build_sitemap(repo_root):
+    """Generate sitemap.xml at repo root.
+    Static pages come from pages.py; post URLs come from scanning published
+    posts using the current url_scheme's canonical form. /blog/'s lastmod is
+    computed from the latest post date.
+    """
+    publisher_dir = os.path.dirname(os.path.abspath(__file__))
+    published_dir = os.path.join(publisher_dir, "published")
+
+    base_url = "https://stephenoravec.com"
+
+    post_entries = []
+    latest_post_date = None
+
+    if os.path.exists(published_dir):
+        for year_dir in sorted(os.listdir(published_dir)):
+            year_path = os.path.join(published_dir, year_dir)
+            if not os.path.isdir(year_path):
+                continue
+            for month_dir in sorted(os.listdir(year_path)):
+                month_path = os.path.join(year_path, month_dir)
+                if not os.path.isdir(month_path):
+                    continue
+                for filename in sorted(os.listdir(month_path)):
+                    if not filename.endswith(".md"):
+                        continue
+                    md_path = os.path.join(month_path, filename)
+                    with open(md_path, "r") as f:
+                        post = frontmatter.load(f)
+
+                    post_date = post.get("date")
+                    if not post_date:
+                        continue
+
+                    if isinstance(post_date, str):
+                        date_obj = datetime.strptime(post_date, "%Y-%m-%d")
+                    else:
+                        date_obj = datetime.combine(post_date, datetime.min.time())
+
+                    date_str = date_obj.strftime("%Y-%m-%d")
+                    date_path = date_obj.strftime("%Y/%m/%d")
+
+                    slug = post.get("slug")
+                    if not slug:
+                        continue
+
+                    canonical = post_url_path(slug, date_path)
+                    post_entries.append({
+                        "url": canonical,
+                        "lastmod": date_str,
+                        "priority": "0.6",
+                    })
+
+                    if latest_post_date is None or date_str > latest_post_date:
+                        latest_post_date = date_str
+
+    # /blog/ entry: lastmod tracks the latest post date
+    blog_listing_lastmod = latest_post_date or datetime.now().strftime("%Y-%m-%d")
+    blog_listing_entry = {
+        "url": "/blog/",
+        "lastmod": blog_listing_lastmod,
+        "priority": "0.8",
+    }
+
+    all_entries = PAGES + [blog_listing_entry] + post_entries
+
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+    lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+
+    for entry in all_entries:
+        full_url = f"{base_url}{entry['url']}"
+        lines.append("  <url>")
+        lines.append(f"    <loc>{full_url}</loc>")
+        lines.append(f"    <lastmod>{entry['lastmod']}</lastmod>")
+        lines.append(f"    <priority>{entry['priority']}</priority>")
+        lines.append("  </url>")
+
+    lines.append('</urlset>')
+
+    sitemap_path = os.path.join(repo_root, "sitemap.xml")
+    with open(sitemap_path, "w") as f:
+        f.write("\n".join(lines))
+
+    print(f"Wrote: {sitemap_path}")
+    print(f"Built sitemap: {len(all_entries)} URLs")
