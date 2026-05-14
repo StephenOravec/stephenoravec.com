@@ -50,7 +50,6 @@ def main():
     elif command == "build-routes":
         publisher_dir = os.path.dirname(os.path.abspath(__file__))
         repo_root = os.path.dirname(publisher_dir)
-        from feeds import build_routes
         build_routes(repo_root)
     elif command == "build-sitemap":
         publisher_dir = os.path.dirname(os.path.abspath(__file__))

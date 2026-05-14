@@ -2,9 +2,9 @@ import json
 import os
 
 
-_blog_dir = os.path.dirname(os.path.abspath(__file__))
-_repo_root = os.path.dirname(_blog_dir)
-_config_path = os.path.join(_repo_root, "bountiful.config.json")
+PUBLISHER_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(PUBLISHER_DIR)
+_config_path = os.path.join(REPO_ROOT, "bountiful.config.json")
 
 
 def _load():

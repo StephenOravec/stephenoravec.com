@@ -1,18 +1,17 @@
-import os
 import json
+import os
 from datetime import datetime
 
 import frontmatter
 
-from config import post_url_path
+from config import PUBLISHER_DIR, post_url_path
 from render import md_to_html, parse_body
 
 
-def build_index(repo_root):
+def build_index(repo_root: str) -> None:
     """Scan published posts, generate JSON chunks, and regenerate the blog index page."""
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    published_dir = os.path.join(blog_dir, "published")
-    templates_dir = os.path.join(blog_dir, "templates")
+    published_dir = os.path.join(PUBLISHER_DIR, "published")
+    templates_dir = os.path.join(PUBLISHER_DIR, "templates")
     data_dir = os.path.join(repo_root, "blog", "data")
 
     os.makedirs(data_dir, exist_ok=True)
