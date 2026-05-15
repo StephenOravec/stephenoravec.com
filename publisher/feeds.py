@@ -19,9 +19,17 @@ def build_routes(repo_root):
 
     routes = []
 
-    # Baseline: block all publisher internals from public access
+    # Baseline: block private files and engine internals from public access
     routes.append({
         "route": "/publisher/*",
+        "statusCode": 404,
+    })
+    routes.append({
+        "route": "/.venv/*",
+        "statusCode": 404,
+    })
+    routes.append({
+        "route": "/requirements.txt",
         "statusCode": 404,
     })
 
