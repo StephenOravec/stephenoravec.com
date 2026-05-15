@@ -1,19 +1,30 @@
+"""Post lifecycle for the blog: new, preview, publish, fix, validate, rebuild.
+
+Handles draft creation, slug validation, URN generation, frontmatter
+serialization, and the orchestration of rendering + index/routes/sitemap
+regeneration after each operation.
+
+Posts live in publisher/drafts/ until published, then move to
+publisher/published/YYYY/MM/<slug>.md. Rendered HTML output lands at
+blog/YYYY/MM/DD/<slug>/index.html in the repo root.
+"""
+
 import os
 import re
-import sys
 import shutil
+import sys
 from datetime import date as date_module, datetime
 
 import frontmatter
 
-from config import post_output_subpath, post_url_path
+from config import PUBLISHER_DIR, REPO_ROOT, post_output_subpath, post_url_path
 from render import render_post, write_post_html
 from images import process_images
 from blog import build_index
 from feeds import build_routes, build_sitemap
 
 
-FIELD_ORDER = [
+FIELD_ORDER: list[str] = [
     "title", "urn", "slug", "legacy_urls", "date", "time",
     "image", "image-alt",
     "description",
@@ -26,7 +37,7 @@ FIELD_ORDER = [
 
 # Slugs that can't be used at root because they collide with site paths,
 # planned site paths, or common web conventions. Adjust as site grows.
-RESERVED_SLUGS = {
+RESERVED_SLUGS: set[str] = {
     # Existing or planned root paths on stephenoravec.com
     "about", "blog", "books", "cablepunk", "games", "inventory", "photography", "profiles",
     "reputation", "resources", "synthography", "videogames", "websites",
@@ -43,7 +54,8 @@ RESERVED_SLUGS = {
 }
 
 
-def slugify(title):
+def slugify(title: str) -> str:
+    """Convert a title into a URL-safe slug."""
     slug = title.lower()
     slug = re.sub(r'[^a-z0-9\s-]', '', slug)
     slug = re.sub(r'[\s]+', '-', slug)
@@ -51,7 +63,10 @@ def slugify(title):
     return slug
 
 
-def validate_slug(slug, exclude_path=None):
+def validate_slug(slug: str, exclude_path: str | None = None) -> tuple[bool, str]:
+    """Validate a slug against reserved names and existing usage.
+    Returns (True, "") on success, (False, error_message) on failure.
+    """
     if not slug:
         return False, "Slug is empty."
     if slug in RESERVED_SLUGS:
@@ -65,10 +80,10 @@ def validate_slug(slug, exclude_path=None):
     return True, ""
 
 
-def _find_slug_usage(slug, exclude_path=None):
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    drafts_dir = os.path.join(blog_dir, "drafts")
-    published_dir = os.path.join(blog_dir, "published")
+def _find_slug_usage(slug: str, exclude_path: str | None = None) -> str | None:
+    """Find the path of the post currently using this slug, or None."""
+    drafts_dir = os.path.join(PUBLISHER_DIR, "drafts")
+    published_dir = os.path.join(PUBLISHER_DIR, "published")
 
     candidates = []
 
@@ -101,13 +116,13 @@ def _find_slug_usage(slug, exclude_path=None):
     return None
 
 
-def validate_all():
+def validate_all() -> list[tuple[str, str]]:
+    """Scan all drafts and published posts for slug issues. Returns list of (path, issue) tuples."""
     issues = []
     seen = {}
 
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    drafts_dir = os.path.join(blog_dir, "drafts")
-    published_dir = os.path.join(blog_dir, "published")
+    drafts_dir = os.path.join(PUBLISHER_DIR, "drafts")
+    published_dir = os.path.join(PUBLISHER_DIR, "published")
 
     paths = []
     if os.path.exists(drafts_dir):
@@ -145,11 +160,10 @@ def validate_all():
     return issues
 
 
-def _all_existing_urns():
+def _all_existing_urns() -> set[str]:
     """Collect every URN already present in drafts and published posts."""
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    drafts_dir = os.path.join(blog_dir, "drafts")
-    published_dir = os.path.join(blog_dir, "published")
+    drafts_dir = os.path.join(PUBLISHER_DIR, "drafts")
+    published_dir = os.path.join(PUBLISHER_DIR, "published")
 
     urns = set()
     paths = []
@@ -182,7 +196,7 @@ def _all_existing_urns():
     return urns
 
 
-def _generate_urn(date_obj):
+def _generate_urn(date_obj: datetime) -> str:
     """Generate a unique URN for a natively-published post.
 
     Format: 14-digit YYYYMMDDHHMMSS. For native blog posts, the time portion
@@ -197,8 +211,8 @@ def _generate_urn(date_obj):
     raise RuntimeError(f"Exhausted URN slots for {date_prefix}.")
 
 
-def write_post_file(path, post):
-    """Write a frontmatter Post to file with our preferred field order."""
+def write_post_file(path: str, post: frontmatter.Post) -> None:
+    """Write a frontmatter Post to file with preferred field order."""
     lines = ["---"]
     for field in FIELD_ORDER:
         value = post.metadata.get(field)
@@ -227,7 +241,8 @@ def write_post_file(path, post):
         f.write("\n".join(lines))
 
 
-def _parse_post_date(post):
+def _parse_post_date(post: frontmatter.Post) -> tuple[datetime | None, str]:
+    """Parse the post's date frontmatter. Returns (datetime, "YYYY/MM/DD") or (None, "")."""
     post_date = post.get("date")
     if not post_date:
         return None, ""
@@ -237,7 +252,14 @@ def _parse_post_date(post):
         date_obj = datetime.combine(post_date, datetime.min.time())
     return date_obj, date_obj.strftime("%Y/%m/%d")
 
-def _render_post_to_disk(post, slug_fallback, date_path, templates_dir, repo_root):
+
+def _render_post_to_disk(
+    post: frontmatter.Post,
+    slug_fallback: str,
+    date_path: str,
+    templates_dir: str,
+    repo_root: str,
+) -> str:
     """Render a post and write its HTML to the canonical filesystem location.
     Returns the actual slug used (frontmatter wins over fallback)."""
     actual_slug = post.get("slug", slug_fallback) or slug_fallback
@@ -247,7 +269,9 @@ def _render_post_to_disk(post, slug_fallback, date_path, templates_dir, repo_roo
     print(f"Built: {output_path}")
     return actual_slug
 
-def _find_published_path(slug, published_dir):
+
+def _find_published_path(slug: str, published_dir: str) -> str | None:
+    """Find the .md file for a published post by slug, or None if not found."""
     if not os.path.exists(published_dir):
         return None
     for year_dir in os.listdir(published_dir):
@@ -264,7 +288,8 @@ def _find_published_path(slug, published_dir):
     return None
 
 
-def new_post(title):
+def new_post(title: str) -> None:
+    """Create a new draft .md file and corresponding staging folder for the given title."""
     slug = slugify(title)
 
     valid, error = validate_slug(slug)
@@ -272,9 +297,8 @@ def new_post(title):
         print(error)
         sys.exit(1)
 
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    drafts_dir = os.path.join(blog_dir, "drafts")
-    staging_dir = os.path.join(blog_dir, "staging")
+    drafts_dir = os.path.join(PUBLISHER_DIR, "drafts")
+    staging_dir = os.path.join(PUBLISHER_DIR, "staging")
 
     draft_path = os.path.join(drafts_dir, f"{slug}.md")
 
@@ -315,10 +339,12 @@ def new_post(title):
     print(f"Created staging folder: {staging_path}")
 
 
-def preview_post(slug):
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    drafts_dir = os.path.join(blog_dir, "drafts")
-    templates_dir = os.path.join(blog_dir, "templates")
+def preview_post(slug: str) -> None:
+    """Render a draft to publisher/preview/ without modifying the draft itself.
+    Images will be broken; image processing occurs during publish_post.
+    """
+    drafts_dir = os.path.join(PUBLISHER_DIR, "drafts")
+    templates_dir = os.path.join(PUBLISHER_DIR, "templates")
 
     draft_path = os.path.join(drafts_dir, f"{slug}.md")
     if not os.path.exists(draft_path):
@@ -333,19 +359,18 @@ def preview_post(slug):
 
     html = render_post(post, actual_slug, date_path, templates_dir)
     output_dir = os.path.join(
-        blog_dir, "preview", *post_output_subpath(actual_slug, date_path)
+        PUBLISHER_DIR, "preview", *post_output_subpath(actual_slug, date_path)
     )
     output_path = write_post_html(html, output_dir)
 
     print(f"Built post: {output_path}")
 
 
-def publish_post(slug):
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    drafts_dir = os.path.join(blog_dir, "drafts")
-    published_dir = os.path.join(blog_dir, "published")
-    templates_dir = os.path.join(blog_dir, "templates")
-    repo_root = os.path.dirname(blog_dir)
+def publish_post(slug: str) -> None:
+    """Stamp date and URN, process images, render HTML, move draft to published/, rebuild artifacts."""
+    drafts_dir = os.path.join(PUBLISHER_DIR, "drafts")
+    published_dir = os.path.join(PUBLISHER_DIR, "published")
+    templates_dir = os.path.join(PUBLISHER_DIR, "templates")
 
     draft_path = os.path.join(drafts_dir, f"{slug}.md")
     if not os.path.exists(draft_path):
@@ -374,7 +399,7 @@ def publish_post(slug):
 
     process_images(slug, date_path)
 
-    _render_post_to_disk(post, slug, date_path, templates_dir, repo_root)
+    _render_post_to_disk(post, slug, date_path, templates_dir, REPO_ROOT)
 
     year = date_obj.strftime("%Y")
     month = date_obj.strftime("%m")
@@ -385,17 +410,15 @@ def publish_post(slug):
 
     print(f"Published: https://stephenoravec.com{post_url_path(actual_slug, date_path)}")
 
-    build_index(repo_root)
-    build_routes(repo_root)
-    build_sitemap(repo_root)
+    build_index(REPO_ROOT)
+    build_routes(REPO_ROOT)
+    build_sitemap(REPO_ROOT)
 
 
-def fix_post(slug):
+def fix_post(slug: str) -> None:
     """Regenerate a published post's HTML without reprocessing images."""
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    published_dir = os.path.join(blog_dir, "published")
-    templates_dir = os.path.join(blog_dir, "templates")
-    repo_root = os.path.dirname(blog_dir)
+    published_dir = os.path.join(PUBLISHER_DIR, "published")
+    templates_dir = os.path.join(PUBLISHER_DIR, "templates")
 
     published_path = _find_published_path(slug, published_dir)
     if not published_path:
@@ -411,23 +434,21 @@ def fix_post(slug):
 
     _, date_path = _parse_post_date(post)
 
-    actual_slug = _render_post_to_disk(post, slug, date_path, templates_dir, repo_root)
+    actual_slug = _render_post_to_disk(post, slug, date_path, templates_dir, REPO_ROOT)
 
-    build_index(repo_root)
-    build_routes(repo_root)
-    build_sitemap(repo_root)
+    build_index(REPO_ROOT)
+    build_routes(REPO_ROOT)
+    build_sitemap(REPO_ROOT)
 
     print(f"Fixed: https://stephenoravec.com{post_url_path(actual_slug, date_path)}")
 
 
-def rebuild():
+def rebuild() -> None:
     """Regenerate all post HTML, the index, and the routes file.
     Use this after changing url_scheme or anything else that affects all posts at once.
     """
-    publisher_dir = os.path.dirname(os.path.abspath(__file__))
-    published_dir = os.path.join(publisher_dir, "published")
-    templates_dir = os.path.join(publisher_dir, "templates")
-    repo_root = os.path.dirname(publisher_dir)
+    published_dir = os.path.join(PUBLISHER_DIR, "published")
+    templates_dir = os.path.join(PUBLISHER_DIR, "templates")
 
     count = 0
     if os.path.exists(published_dir):
@@ -452,13 +473,13 @@ def rebuild():
                     _, date_path = _parse_post_date(post)
                     slug_fallback = filename[:-3]  # strip ".md"
 
-                    _render_post_to_disk(post, slug_fallback, date_path, templates_dir, repo_root)
+                    _render_post_to_disk(post, slug_fallback, date_path, templates_dir, REPO_ROOT)
                     count += 1
 
     print(f"Rendered {count} posts")
 
-    build_index(repo_root)
-    build_routes(repo_root)
-    build_sitemap(repo_root)
+    build_index(REPO_ROOT)
+    build_routes(REPO_ROOT)
+    build_sitemap(REPO_ROOT)
 
     print("Rebuild complete.")
