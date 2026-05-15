@@ -1,8 +1,8 @@
 import os
 import sys
 
-from PIL import Image
 from google.cloud import storage as gcs_storage
+from PIL import Image
 
 from config import PUBLISHER_DIR
 
