@@ -22,15 +22,18 @@ def build_routes(repo_root):
     # Baseline: block private files and engine internals from public access
     routes.append({
         "route": "/publisher/*",
-        "statusCode": 404,
+        "redirect": "/",
+        "statusCode": 301,
     })
     routes.append({
         "route": "/.venv/*",
-        "statusCode": 404,
+        "redirect": "/",
+        "statusCode": 301,
     })
     routes.append({
         "route": "/requirements.txt",
-        "statusCode": 404,
+        "redirect": "/",
+        "statusCode": 301,
     })
 
     if os.path.exists(published_dir):
