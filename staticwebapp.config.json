@@ -2,7 +2,8 @@
   "routes": [
     {
       "route": "/publisher/*",
-      "statusCode": 404
+      "redirect": "/",
+      "statusCode": 301
     },
     {
       "route": "/spring-break-2026/",
