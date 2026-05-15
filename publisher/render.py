@@ -1,9 +1,27 @@
+"""HTML rendering for blog posts.
+
+Converts Markdown frontmatter and body content into HTML pages via templates.
+Handles inline Markdown (bold, italic, links), a custom image syntax
+(::image[], ::alt[], ::caption[]), responsive image srcsets, and template
+variable substitution.
+
+Image URLs are constructed for the GCS bucket configured in images.py;
+each post's featured image and body figures expect 400w, 1000w, 2000w WebP
+variants plus an og.webp variant for social cards.
+
+Path-agnostic — callers (posts.py, blog.py) pass in templates_dir and
+output_dir.
+"""
+
+
 import os
 import re
-from datetime import datetime
+from datetime import date, datetime
+
+import frontmatter
 
 
-def md_to_html(text):
+def md_to_html(text: str) -> str:
     """Convert basic Markdown formatting to HTML for rich-text contexts."""
     if not text:
         return ""
@@ -12,7 +30,7 @@ def md_to_html(text):
     return text
 
 
-def strip_markdown(text):
+def strip_markdown(text: str) -> str:
     """Strip Markdown formatting for plain-text contexts like meta tags."""
     if not text:
         return ""
@@ -21,7 +39,7 @@ def strip_markdown(text):
     return text
 
 
-def inline_format(text):
+def inline_format(text: str) -> str:
     """Apply inline Markdown formatting: links, bold, italics."""
     if not text:
         return ""
@@ -40,7 +58,7 @@ def inline_format(text):
     return text
 
 
-def render_figure(image_name, alt_text, caption_text, date_path):
+def render_figure(image_name: str, alt_text: str, caption_text: str, date_path: str) -> str:
     """Render a body image as a <figure> with responsive srcset and optional caption."""
     if not image_name:
         return ""
@@ -60,7 +78,7 @@ def render_figure(image_name, alt_text, caption_text, date_path):
         return f'<figure>{img_html}</figure>'
 
 
-def parse_body(text, date_path):
+def parse_body(text: str, date_path: str) -> str:
     """Parse Markdown body content into HTML, including custom image syntax."""
     if not text or not text.strip():
         return ""
@@ -118,30 +136,35 @@ def parse_body(text, date_path):
     return "\n".join(html_parts)
 
 
-def render_post(post, slug_default, date_path, templates_dir):
+def render_post(post: frontmatter.Post, slug_default: str, date_path: str, templates_dir: str) -> str:
     """Render a post's HTML from a frontmatter Post object.
 
     Single source of truth for HTML generation. Used by preview, publish,
     and fix lifecycle commands. The slug from frontmatter takes precedence
     over slug_default when present.
     """
-    title = post.get("title", "") or ""
-    description_raw = post.get("description", "") or ""
+    title = str(post.get("title") or "")
+    description_raw = str(post.get("description") or "")
     description_html = md_to_html(description_raw)
     description_plain = strip_markdown(description_raw)
-    slug = post.get("slug", slug_default) or slug_default
-    date = post.get("date", "") or ""
-    image_name = post.get("image", "") or ""
-    image_alt = post.get("image-alt", "") or ""
-
+    slug = str(post.get("slug") or slug_default)
+    image_name = str(post.get("image") or "")
+    image_alt = str(post.get("image-alt") or "")
+    
+    date_value = post.get("date")
     display_date = ""
-    if date:
-        if isinstance(date, str):
-            date_obj = datetime.strptime(date, "%Y-%m-%d")
-        else:
-            date_obj = datetime.combine(date, datetime.min.time())
+    formatted_date = ""
+
+    if date_value:
+        date_obj = None
+        if isinstance(date_value, str):
+            date_obj = datetime.strptime(date_value, "%Y-%m-%d")
+        elif isinstance(date_value, date):
+            date_obj = datetime.combine(date_value, datetime.min.time())
+
+    if date_obj is not None:
         display_date = date_obj.strftime("%B %-d, %Y")
-        date = date_obj.strftime("%Y-%m-%d")
+        formatted_date = date_obj.strftime("%Y-%m-%d")
 
     image_url = ""
     image_url_400 = ""
@@ -166,7 +189,7 @@ def render_post(post, slug_default, date_path, templates_dir):
     html = html.replace("{{description_html}}", description_html)
     html = html.replace("{{description_plain}}", description_plain)
     html = html.replace("{{slug}}", slug)
-    html = html.replace("{{date}}", date)
+    html = html.replace("{{date}}", formatted_date)
     html = html.replace("{{date_path}}", date_path)
     html = html.replace("{{display_date}}", display_date)
     html = html.replace("{{image_url}}", image_url)
@@ -180,7 +203,7 @@ def render_post(post, slug_default, date_path, templates_dir):
     return html
 
 
-def write_post_html(html, output_dir):
+def write_post_html(html: str, output_dir: str) -> str:
     """Write rendered HTML to output_dir/index.html. Returns the full output path."""
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "index.html")
