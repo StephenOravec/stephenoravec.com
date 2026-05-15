@@ -6,6 +6,16 @@
       "statusCode": 301
     },
     {
+      "route": "/.venv/*",
+      "redirect": "/",
+      "statusCode": 301
+    },
+    {
+      "route": "/requirements.txt",
+      "redirect": "/",
+      "statusCode": 301
+    },
+    {
       "route": "/spring-break-2026/",
       "rewrite": "/blog/2026/04/16/spring-break-2026/index.html"
     },
