@@ -4,10 +4,12 @@ import sys
 from PIL import Image
 from google.cloud import storage as gcs_storage
 
+from config import PUBLISHER_DIR
 
-def process_images(slug, date_path):
-    blog_dir = os.path.dirname(os.path.abspath(__file__))
-    staging_dir = os.path.join(blog_dir, "staging", slug)
+
+def process_images(slug: str, date_path: str) -> None:
+    """Process all images in publisher/staging/<slug>/ and upload variants to GCS."""
+    staging_dir = os.path.join(PUBLISHER_DIR, "staging", slug)
 
     if not os.path.exists(staging_dir):
         print(f"Staging folder not found: {staging_dir}")
@@ -40,7 +42,7 @@ def process_images(slug, date_path):
             if img.width > width:
                 ratio = width / img.width
                 height = int(img.height * ratio)
-                resized = img.resize((width, height), Image.LANCZOS)
+                resized = img.resize((width, height), Image.Resampling.LANCZOS)
             else:
                 resized = img.copy()
 
@@ -67,7 +69,7 @@ def process_images(slug, date_path):
             top = (img.height - new_height) // 2
             cropped = img.crop((0, top, img.width, top + new_height))
 
-        og = cropped.resize((og_width, og_height), Image.LANCZOS)
+        og = cropped.resize((og_width, og_height), Image.Resampling.LANCZOS)
         og_temp_path = os.path.join(staging_dir, f"{name}-og.webp")
         og.save(og_temp_path, "WEBP", quality=85)
 
