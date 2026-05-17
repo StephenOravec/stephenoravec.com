@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+from datetime import date, datetime
 
 import frontmatter
 
@@ -37,12 +37,16 @@ def build_index(repo_root: str) -> None:
                     if not post_date:
                         continue
 
+                    date_obj = None
                     if isinstance(post_date, str):
                         date_obj = datetime.strptime(post_date, "%Y-%m-%d")
-                    else:
+                    elif isinstance(post_date, date):
                         date_obj = datetime.combine(post_date, datetime.min.time())
+                    
+                    if date_obj is None:
+                        continue
 
-                    slug = post.get("slug")
+                    slug = str(post.get("slug") or "")
                     if not slug:
                         continue
                     
@@ -52,7 +56,7 @@ def build_index(repo_root: str) -> None:
                     
                     urn = post.get("urn", "") or ""
                     title = post.get("title", "") or ""
-                    description_raw = post.get("description", "") or ""
+                    description_raw = str(post.get("description") or "")
                     description_html = md_to_html(description_raw)
                     image_name = post.get("image", "") or ""
                     image_alt = post.get("image-alt", "") or ""
