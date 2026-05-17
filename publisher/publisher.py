@@ -25,6 +25,7 @@ def main() -> None:
         print("  Orchestration:    rebuild")
         print("  Builders:         build-index, build-routes, build-sitemap")
         print("  Validation:       validate")
+        sys.exit(1)
 
     command = sys.argv[1]
 
