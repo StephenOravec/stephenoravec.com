@@ -8,11 +8,11 @@ to see all available commands.
 
 import sys
 
-from blog import build_index
-from config import REPO_ROOT
-from feeds import build_routes, build_sitemap
-from images import process_images
-from posts import new_post, preview_post, publish_post, fix_post, validate_all, rebuild
+from .blog import build_index
+from .config import REPO_ROOT
+from .feeds import build_routes, build_sitemap
+from .images import process_images
+from .posts import new_post, preview_post, publish_post, fix_post, validate_all, rebuild
 
 
 def main() -> None:

@@ -16,8 +16,8 @@ from datetime import datetime
 
 import frontmatter
 
-from config import PUBLISHER_DIR, URL_SCHEME, post_url_path
-from pages import PAGES
+from .config import PUBLISHER_DIR, URL_SCHEME, post_url_path
+from .pages import PAGES
 
 
 def build_routes(repo_root: str) -> None:

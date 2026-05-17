@@ -4,7 +4,7 @@ import sys
 from google.cloud import storage as gcs_storage
 from PIL import Image
 
-from config import PUBLISHER_DIR
+from .config import PUBLISHER_DIR
 
 
 def process_images(slug: str, date_path: str) -> None:

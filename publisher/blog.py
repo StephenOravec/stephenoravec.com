@@ -4,8 +4,8 @@ from datetime import datetime
 
 import frontmatter
 
-from config import PUBLISHER_DIR, post_url_path
-from render import md_to_html, parse_body
+from .config import PUBLISHER_DIR, post_url_path
+from .render import md_to_html, parse_body
 
 
 def build_index(repo_root: str) -> None:
