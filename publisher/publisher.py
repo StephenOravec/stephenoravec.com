@@ -1,17 +1,30 @@
-import os
+"""CLI entry point for the blog publisher.
+
+Dispatches to functions in posts.py, blog.py, feeds.py, and images.py based
+on the command argument. Run with `python publisher.py <command> [arguments]`
+to see all available commands.
+"""
+
+
 import sys
 
-from posts import new_post, preview_post, publish_post, fix_post, validate_all, rebuild
-from images import process_images
 from blog import build_index
+from config import REPO_ROOT
 from feeds import build_routes, build_sitemap
+from images import process_images
+from posts import new_post, preview_post, publish_post, fix_post, validate_all, rebuild
 
 
-def main():
+def main() -> None:
+    """Parse command-line arguments and dispatch to the appropriate handler."""
     if len(sys.argv) < 2:
         print("Usage: python publisher.py <command> [arguments]")
-        print("Commands: new, preview, process-images, publish, fix, build-index, validate, build-routes, build-sitemap, rebuild")
-        sys.exit(1)
+        print("Commands:")
+        print("  Lifecycle:        new, preview, publish, fix")
+        print("  Image processing: process-images")
+        print("  Orchestration:    rebuild")
+        print("  Builders:         build-index, build-routes, build-sitemap")
+        print("  Validation:       validate")
 
     command = sys.argv[1]
 
@@ -24,13 +37,7 @@ def main():
         if len(sys.argv) < 3:
             print('Usage: python publisher.py preview <slug>')
             sys.exit(1)
-        preview_post(sys.argv[2])
-    elif command == "process-images":
-        if len(sys.argv) < 4:
-            print('Usage: python publisher.py process-images <slug> <date-path>')
-            print('Example: python publisher.py process-images spring-break-2026 2026/04/08')
-            sys.exit(1)
-        process_images(sys.argv[2], sys.argv[3])
+        preview_post(sys.argv[2])    
     elif command == "publish":
         if len(sys.argv) < 3:
             print('Usage: python publisher.py publish <slug>')
@@ -41,20 +48,20 @@ def main():
             print('Usage: python publisher.py fix <slug>')
             sys.exit(1)
         fix_post(sys.argv[2])
+    elif command == "process-images":
+        if len(sys.argv) < 4:
+            print('Usage: python publisher.py process-images <slug> <date-path>')
+            print('Example: python publisher.py process-images spring-break-2026 2026/04/08')
+            sys.exit(1)
+        process_images(sys.argv[2], sys.argv[3])
     elif command == "rebuild":
         rebuild()
     elif command == "build-index":
-        blog_dir = os.path.dirname(os.path.abspath(__file__))
-        repo_root = os.path.dirname(blog_dir)
-        build_index(repo_root)
+        build_index(REPO_ROOT)
     elif command == "build-routes":
-        publisher_dir = os.path.dirname(os.path.abspath(__file__))
-        repo_root = os.path.dirname(publisher_dir)
-        build_routes(repo_root)
+        build_routes(REPO_ROOT)
     elif command == "build-sitemap":
-        publisher_dir = os.path.dirname(os.path.abspath(__file__))
-        repo_root = os.path.dirname(publisher_dir)
-        build_sitemap(repo_root)
+        build_sitemap(REPO_ROOT)
     elif command == "validate":
         issues = validate_all()
         if not issues:
