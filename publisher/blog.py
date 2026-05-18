@@ -16,6 +16,7 @@ def build_index(repo_root: str) -> None:
 
     os.makedirs(data_dir, exist_ok=True)
 
+    # --- Scan published posts and collect their metadata ---
     posts = []
     if os.path.exists(published_dir):
         for year_dir in sorted(os.listdir(published_dir), reverse=True):
@@ -102,13 +103,17 @@ def build_index(repo_root: str) -> None:
                         "has_body": has_body,
                     })
 
+    # --- Sort posts reverse-chronologically ---
     posts.sort(key=lambda p: p["date"], reverse=True)
 
+    # --- Generate version string for cache-busting ---
     version = datetime.now().strftime("%Y%m%d%H%M%S")
 
+    # --- Split posts into JSON chunks for paginated loading ---
     chunk_size = 10
     chunks = [posts[i:i + chunk_size] for i in range(0, len(posts), chunk_size)]
 
+    # --- Clear old chunks before writing new ones ---
     for filename in os.listdir(data_dir):
         if filename.startswith("posts-") and filename.endswith(".json"):
             os.remove(os.path.join(data_dir, filename))
@@ -119,6 +124,7 @@ def build_index(repo_root: str) -> None:
             json.dump({"posts": chunk}, f, indent=2)
         print(f"Wrote: {chunk_path}")
 
+    # --- Write the manifest file describing the chunk set ---
     manifest = {
         "total_posts": len(posts),
         "chunk_count": len(chunks),
@@ -130,6 +136,7 @@ def build_index(repo_root: str) -> None:
         json.dump(manifest, f, indent=2)
     print(f"Wrote: {manifest_path}")
 
+    # --- Render the blog index template with the version string ---
     template_path = os.path.join(templates_dir, "index.html")
     if os.path.exists(template_path):
         with open(template_path, "r") as f:
