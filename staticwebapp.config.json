@@ -41,6 +41,15 @@
       "route": "/blog/2026/04/19/wiami-breach-alert/",
       "redirect": "/wiami-breach-alert/",
       "statusCode": 301
+    },
+    {
+      "route": "/master-of-unlocking/",
+      "rewrite": "/blog/2026/06/03/master-of-unlocking/index.html"
+    },
+    {
+      "route": "/blog/2026/06/03/master-of-unlocking/",
+      "redirect": "/master-of-unlocking/",
+      "statusCode": 301
     }
   ],
   "responseOverrides": {

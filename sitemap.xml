@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://stephenoravec.com/blog/</loc>
-    <lastmod>2026-04-25</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -38,6 +38,11 @@
   <url>
     <loc>https://stephenoravec.com/wiami-breach-alert/</loc>
     <lastmod>2026-04-19</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://stephenoravec.com/master-of-unlocking/</loc>
+    <lastmod>2026-06-03</lastmod>
     <priority>0.6</priority>
   </url>
 </urlset>
